@@ -18,22 +18,36 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val appDatabase = AppDatabase.getInstance(this)
-        val db = appDatabase.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM task", null)
+//        val appDatabase = AppDatabase.getInstance(this)
+//        val db = appDatabase.readableDatabase
+//        val cursor = db.rawQuery("SELECT * FROM task", null)
+
+        val projection =
+            arrayOf(TaskContract.Columns.TASK_NAME, TaskContract.Columns.TASK_SORT_ORDER)
+        val sortOrder = TaskContract.Columns.TASK_SORT_ORDER
+
+        val cursor = contentResolver.query(
+            TaskContract.buildUriFromId(2),
+            projection,
+            null,
+            null,
+            sortOrder
+        )
 
         Log.d(TAG, "**********************")
 
         cursor.use {
-            while (it.moveToNext()) {
-                with(it) {
-                    val id = getLong(0)
-                    val name = getString(1)
-                    val description = getString(2)
-                    val sortOrder = getLong(3)
-                    val result =
-                        "id: $id, name: $name, description: $description, sort order: $sortOrder"
-                    Log.d(TAG, "onCreate: reading data: $result")
+            if (it != null) {
+                while (it.moveToNext()) {
+                    with(it) {
+                        //                        val id = getLong(0)
+                        val name = getString(0)
+//                        val description = getString(2)
+                        val sortOrder = getLong(1)
+                        val result =
+                            "name: $name, sort order: $sortOrder"
+                        Log.d(TAG, "onCreate: reading data: $result")
+                    }
                 }
             }
         }

@@ -15,7 +15,7 @@ import android.util.Log
 
 private const val TAG = "AppContentProvider"
 
-private const val CONTENT_AUTHORITY = "com.akash.taskmonitor.provider"
+private const val CONTENT_AUTHORITY = "com.akash.tasktimer.provider"
 
 private const val TASKS = 100
 private const val TASKS_ID = 101
@@ -29,6 +29,7 @@ private const val TASK_DURATIONS_ID = 401
 val CONTENT_AUTHORITY_URI = Uri.parse("content://$CONTENT_AUTHORITY")
 
 class AppContentProvider : ContentProvider() {
+
 
     private val uriMatcher by lazy { buildUriMatcher() }
 
@@ -51,7 +52,7 @@ class AppContentProvider : ContentProvider() {
         return true
     }
 
-    override fun getType(uri: Uri): String? {
+    override fun getType(uri: Uri): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -71,12 +72,22 @@ class AppContentProvider : ContentProvider() {
         when (match) {
 
             TASKS -> queryBuilder.tables = TaskContract.TABLE_NAME
+
             TASKS_ID -> {
                 queryBuilder.tables = TaskContract.TABLE_NAME
                 val taskId = TaskContract.getId(uri)
-                queryBuilder.appendWhereEscapeString("${TaskContract.Columns.TASK_ID} == $taskId")
+                queryBuilder.appendWhere("${TaskContract.Columns.TASK_ID} == ")
+                queryBuilder.appendWhereEscapeString("$taskId")
             }
+
+            else -> throw IllegalArgumentException("Unknown Uri: $uri")
         }
+        val db = AppDatabase.getInstance(context!!).readableDatabase
+        val cursor =
+            queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder)
+        Log.d(TAG, "query: rows in returned cursor = ${cursor.count}")
+
+        return cursor
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {

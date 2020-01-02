@@ -19,6 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="com.akash.tasktimer.provider"
+            android:name="com.akash.tasktimer.AppContentProvider"
+            android:exported="false" />
+        <!--exported -> to set if other apps can use this app contents or not-->
     </application>
 
 </manifest>

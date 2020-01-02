@@ -22,10 +22,10 @@ internal class AppDatabase private constructor(context: Context) :
 
         Log.d(TAG, "onCreate starts")
         val query = """CREATE TABLE ${TaskContract.TABLE_NAME}(
-            |${TaskContract.Columns.ID} INTEGER PRIMARY KEY NOT NULL,
-            |${TaskContract.Columns.NAME} TEXT NOT NULL,
-            |${TaskContract.Columns.DESCRIPTION} TEXT,
-            |${TaskContract.Columns.SORT_ORDER} INTEGER
+            |${TaskContract.Columns.TASK_ID} INTEGER PRIMARY KEY NOT NULL,
+            |${TaskContract.Columns.TASK_NAME} TEXT NOT NULL,
+            |${TaskContract.Columns.TASK_DESCRIPTION} TEXT,
+            |${TaskContract.Columns.TASK_SORT_ORDER} INTEGER
             |);""".trimMargin().replaceIndent(" ")
         Log.d(TAG, query)
         db.execSQL(query)

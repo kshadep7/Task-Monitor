@@ -27,12 +27,19 @@ class MainActivity : AppCompatActivity() {
         val sortOrder = TaskContract.Columns.TASK_SORT_ORDER
 
         val cursor = contentResolver.query(
-            TaskContract.buildUriFromId(2),
-            projection,
+            TaskContract.CONTENT_URI,
+            null,
             null,
             null,
             sortOrder
         )
+//        val cursor = contentResolver.query(
+//            TaskContract.buildUriFromId(2),
+//            projection,
+//            null,
+//            null,
+//            sortOrder
+//        )
 
         Log.d(TAG, "**********************")
 
@@ -40,12 +47,16 @@ class MainActivity : AppCompatActivity() {
             if (it != null) {
                 while (it.moveToNext()) {
                     with(it) {
-                        //                        val id = getLong(0)
-                        val name = getString(0)
-//                        val description = getString(2)
-                        val sortOrder = getLong(1)
-                        val result =
-                            "name: $name, sort order: $sortOrder"
+                        val id = getLong(0)
+                        val name = getString(1)
+                        val description = getString(2)
+                        val sortOrder = getLong(3)
+                        val result = """
+                            ID: $id
+                            Name: $name
+                            Description: $description
+                            Sort Order: $sortOrder
+                        """.trimIndent()
                         Log.d(TAG, "onCreate: reading data: $result")
                     }
                 }

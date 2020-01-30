@@ -22,7 +22,7 @@ internal class AppDatabase private constructor(context: Context) :
 
         Log.d(TAG, "onCreate starts")
         val query = """CREATE TABLE ${TaskContract.TABLE_NAME}(
-            |${TaskContract.Columns.TASK_ID} INTEGER PRIMARY KEY NOT NULL,
+            |${TaskContract.Columns.ID} INTEGER PRIMARY KEY NOT NULL,
             |${TaskContract.Columns.TASK_NAME} TEXT NOT NULL,
             |${TaskContract.Columns.TASK_DESCRIPTION} TEXT,
             |${TaskContract.Columns.TASK_SORT_ORDER} INTEGER

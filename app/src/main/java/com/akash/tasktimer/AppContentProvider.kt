@@ -4,6 +4,7 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
+import android.database.SQLException
 import android.database.sqlite.SQLiteQueryBuilder
 import android.net.Uri
 import android.util.Log
@@ -43,6 +44,9 @@ class AppContentProvider : ContentProvider() {
         // for content://com.akash.taskmonitor.provider/tasks/4 --> specific task eg. running
         matcher.addURI(CONTENT_AUTHORITY, "${TaskContract.TABLE_NAME}/#", TASKS_ID)
 
+        matcher.addURI(CONTENT_AUTHORITY, TimingContract.TABLE_NAME, TIMINGS)
+        matcher.addURI(CONTENT_AUTHORITY, "${TimingContract.TABLE_NAME}/#", TIMINGS_ID)
+
         return matcher
     }
 
@@ -53,7 +57,21 @@ class AppContentProvider : ContentProvider() {
     }
 
     override fun getType(uri: Uri): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val match = uriMatcher.match(uri)
+
+        return when (match) {
+
+            TASKS -> TaskContract.CONTENT_TYPE
+
+            TASKS_ID -> TaskContract.CONTENT_ITEM_TYPE
+
+            TIMINGS -> TimingContract.CONTENT_TYPE
+
+            TIMINGS_ID -> TimingContract.CONTENT_ITEM_TYPE
+
+            else -> throw IllegalArgumentException("Unknown uri : $uri")
+        }
     }
 
     override fun query(
@@ -76,8 +94,17 @@ class AppContentProvider : ContentProvider() {
             TASKS_ID -> {
                 queryBuilder.tables = TaskContract.TABLE_NAME
                 val taskId = TaskContract.getId(uri)
-                queryBuilder.appendWhere("${TaskContract.Columns.TASK_ID} == ")
+                queryBuilder.appendWhere("${TaskContract.Columns.ID} == ")
                 queryBuilder.appendWhereEscapeString("$taskId")
+            }
+
+            TIMINGS -> queryBuilder.tables = TimingContract.TABLE_NAME
+
+            TIMINGS_ID -> {
+                queryBuilder.tables = TimingContract.TABLE_NAME
+                val timingId = TimingContract.getId(uri)
+                queryBuilder.appendWhere("${TimingContract.Columns.ID} ==")
+                queryBuilder.appendWhereEscapeString("$timingId")
             }
 
             else -> throw IllegalArgumentException("Unknown Uri: $uri")
@@ -92,7 +119,43 @@ class AppContentProvider : ContentProvider() {
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         Log.d(TAG, "insert called")
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        Log.d(TAG, "insert: called with Uri: $uri")
+        val match = uriMatcher.match(uri)
+        Log.d(TAG, "insert: match with $match")
+
+        val recordId: Long
+        val returnUri: Uri
+
+
+        when (match) {
+
+            TASKS -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                recordId = db.insert(TaskContract.TABLE_NAME, null, values)
+                if (recordId != -1L) {
+                    returnUri = TaskContract.buildUriFromId(recordId)
+                } else {
+                    throw SQLException("Failed to insert record, uri: $uri")
+                }
+            }
+
+            TIMINGS -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                recordId = db.insert(TimingContract.TABLE_NAME, null, values)
+                if (recordId != -1L) {
+                    returnUri = TimingContract.buildUriFromId(recordId)
+                } else {
+                    throw SQLException("Failed to insert record, uri: $uri")
+                }
+            }
+
+            else -> throw IllegalArgumentException("Unknown uri $uri")
+
+        }
+        Log.d(TAG, "Exiting insert: returning uri: $returnUri")
+        return returnUri
+
     }
 
     override fun update(
@@ -101,11 +164,115 @@ class AppContentProvider : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?
     ): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        Log.d(TAG, "update: called with Uri: $uri")
+        val match = uriMatcher.match(uri)
+        Log.d(TAG, "update: match with $match")
+
+        val count: Int
+        var selectionCriteria: String
+
+        when (match) {
+
+            TASKS -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                count = db.update(TaskContract.TABLE_NAME, values, selection, selectionArgs)
+            }
+
+            TASKS_ID -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                val id = TaskContract.getId(uri)
+
+                selectionCriteria = "${TaskContract.Columns.ID} == $id"
+
+                if (selection != null && selection.isNotEmpty()) {
+                    selectionCriteria += " AND ($selection)"
+                }
+
+                count = db.update(TaskContract.TABLE_NAME, values, selectionCriteria, selectionArgs)
+
+            }
+
+            TIMINGS -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                count = db.update(TimingContract.TABLE_NAME, values, selection, selectionArgs)
+            }
+
+            TIMINGS_ID -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                val id = TimingContract.getId(uri)
+
+                selectionCriteria = "${TimingContract.Columns.ID} == $id"
+
+                if (selection != null && selection.isNotEmpty()) {
+                    selectionCriteria += " AND ($selection)"
+                }
+
+                count =
+                    db.update(TimingContract.TABLE_NAME, values, selectionCriteria, selectionArgs)
+
+            }
+
+            else -> throw IllegalArgumentException("Unknown uri $uri")
+
+        }
+        Log.d(TAG, "Exiting update: returning count: $count")
+        return count
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d(TAG, "delete: called with Uri: $uri")
+        val match = uriMatcher.match(uri)
+        Log.d(TAG, "delete: match with $match")
+
+        val count: Int
+        var selectionCriteria: String
+
+        when (match) {
+
+            TASKS -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                count = db.delete(TaskContract.TABLE_NAME, selection, selectionArgs)
+            }
+
+            TASKS_ID -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                val id = TaskContract.getId(uri)
+
+                selectionCriteria = "${TaskContract.Columns.ID} == $id"
+
+                if (selection != null && selection.isNotEmpty()) {
+                    selectionCriteria += " AND ($selection)"
+                }
+
+                count = db.delete(TaskContract.TABLE_NAME, selectionCriteria, selectionArgs)
+
+            }
+
+            TIMINGS -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                count = db.delete(TimingContract.TABLE_NAME, selection, selectionArgs)
+            }
+
+            TIMINGS_ID -> {
+                val db = AppDatabase.getInstance(context!!).writableDatabase
+                val id = TimingContract.getId(uri)
+
+                selectionCriteria = "${TimingContract.Columns.ID} == $id"
+
+                if (selection != null && selection.isNotEmpty()) {
+                    selectionCriteria += " AND ($selection)"
+                }
+
+                count = db.delete(TimingContract.TABLE_NAME, selectionCriteria, selectionArgs)
+
+            }
+
+            else -> throw IllegalArgumentException("Unknown uri $uri")
+
+        }
+        Log.d(TAG, "Exiting delete: returning count: $count")
+        return count
     }
 
 }

@@ -1,5 +1,6 @@
 package com.akash.tasktimer
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -22,6 +23,9 @@ class MainActivity : AppCompatActivity() {
 //        val db = appDatabase.readableDatabase
 //        val cursor = db.rawQuery("SELECT * FROM task", null)
 
+//        testInsert()
+//        testUpdate()
+        testDelete()
         val projection =
             arrayOf(TaskContract.Columns.TASK_NAME, TaskContract.Columns.TASK_SORT_ORDER)
         val sortOrder = TaskContract.Columns.TASK_SORT_ORDER
@@ -71,6 +75,51 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d(TAG, "onCreate Ends")
+    }
+
+    private fun testDelete() {
+
+// to delete only one record
+//        val taskUri = TaskContract.buildUriFromId(3)
+// to delete multiple records
+        val selection =
+            TaskContract.Columns.TASK_SORT_ORDER + " == 3" // --> where clause ("sortorder == 3")
+        val rowsAffected = contentResolver.delete(TaskContract.CONTENT_URI, selection, null)
+        Log.d(TAG, "Testing delete: rows deleted --> $rowsAffected")
+    }
+
+
+    private fun testUpdate() {
+
+        val values = ContentValues().apply {
+            put(TaskContract.Columns.TASK_NAME, "Leetcode")
+            put(TaskContract.Columns.TASK_DESCRIPTION, "Solving problems")
+        }
+
+// to delete only one record
+//        val taskUri = TaskContract.buildUriFromId(4)
+// to delete multiple records
+        val selection =
+            TaskContract.Columns.TASK_SORT_ORDER + " == ?" // --> where clause ("sortorder == 3")
+        val selectionArgs = arrayOf("3") // mainly used to prevent SQL injections
+        // The ? from selection checks the each values from selectionArgs array
+
+        val rowsAffected =
+            contentResolver.update(TaskContract.CONTENT_URI, values, selection, selectionArgs)
+        Log.d(TAG, "Testing update: rows Affected --> $rowsAffected")
+    }
+
+    private fun testInsert() {
+
+        val values = ContentValues().apply {
+            put(TaskContract.Columns.TASK_NAME, "New Task 1")
+            put(TaskContract.Columns.TASK_DESCRIPTION, "New Description")
+            put(TaskContract.Columns.TASK_SORT_ORDER, 3)
+        }
+
+        val uri = contentResolver.insert(TaskContract.CONTENT_URI, values)
+        Log.d(TAG, "Test Insertion with uri $uri")
+        Log.d(TAG, "task inserted with id ${TaskContract.getId(uri!!)}")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

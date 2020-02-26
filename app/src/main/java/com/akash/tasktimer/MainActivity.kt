@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate Start")
@@ -19,6 +19,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        Log.d(TAG, "onCreate Ends")
+
+/*
 //        val appDatabase = AppDatabase.getInstance(this)
 //        val db = appDatabase.readableDatabase
 //        val cursor = db.rawQuery("SELECT * FROM task", null)
@@ -73,10 +76,48 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+*/
 
-        Log.d(TAG, "onCreate Ends")
     }
 
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        Log.d(TAG, "onCreateOptionsMenu: Start")
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(TAG, "onOptionsItemSelected: Start")
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        when (item.itemId) {
+//            R.id.menumain_settings -> true
+            R.id.mainmenu_addTask -> taskEditRequest(null)
+//            else -> super.onOptionsItemSelected(item)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun taskEditRequest(task: Task?){
+        Log.d(TAG, "taskEditRequest: Starts")
+
+        // create a new fragment
+        val newFragment = FragmentAddEdit.newInstance(task)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment, newFragment)
+            .commit()
+
+        Log.d(TAG, "taskEditRequest: Ends")
+    }
+
+    override fun onSaveClicked() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+/*
     private fun testDelete() {
 
 // to delete only one record
@@ -121,20 +162,4 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "Test Insertion with uri $uri")
         Log.d(TAG, "task inserted with id ${TaskContract.getId(uri!!)}")
     }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.menumain_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-}
+*/

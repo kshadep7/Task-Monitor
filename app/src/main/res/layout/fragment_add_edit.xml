@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/edtxtAddName"
+        android:id="@+id/editTextAddName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -13,7 +13,7 @@
         android:maxLength="64" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -22,7 +22,7 @@
         android:maxLength="256" />
 
     <EditText
-        android:id="@+id/editTxtSortorder"
+        android:id="@+id/editTextSortorder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"

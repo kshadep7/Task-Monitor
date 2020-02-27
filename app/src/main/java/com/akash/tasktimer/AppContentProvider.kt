@@ -157,7 +157,7 @@ class AppContentProvider : ContentProvider() {
         return returnUri
 
     }
-
+// Content resolver update function
     override fun update(
         uri: Uri,
         values: ContentValues?,

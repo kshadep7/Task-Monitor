@@ -1,15 +1,16 @@
 package com.akash.tasktimer
 
+import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_add_edit.*
-import java.lang.RuntimeException
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_TASK = "task"
@@ -56,6 +57,22 @@ class FragmentAddEdit : Fragment() {
         return inflater.inflate(R.layout.fragment_add_edit, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val task = task
+            if (task != null) {
+                Log.d(TAG, "onViewCreated: savedInstanceState Bundle info -> $task")
+                editTextAddName.setText(task.name)
+                editTextDescription.setText(task.description)
+                editTextSortorder.setText(task.sortOrder.toString())
+            } else {
+                //Do Nothing or add or edit the task.
+                Log.d(TAG, "onViewCreated: No args, adding new task")
+            }
+        }
+    }
+
     override fun onAttach(context: Context) {
         Log.d(TAG, "onAttach: starts")
         super.onAttach(context)
@@ -68,6 +85,59 @@ class FragmentAddEdit : Fragment() {
         Log.d(TAG, "onDetach: starts")
         super.onDetach()
         listener = null
+    }
+
+    private fun saveTask() {
+        // to save the task details or to update the existing one
+        val values = ContentValues()
+        val task = task
+        // 1. checking if sort order is mentioned or not is (if yes -> convert to Int if no -> 0)
+        var sortOrder =
+            if (editTextSortorder.text.isNotEmpty()) Integer.parseInt(editTextSortorder.text.toString())
+            else 0
+        // updating the existing the record/task
+        if (task != null) {
+            //name:
+            if (editTextAddName.text.toString() != task.name)
+                values.put(TaskContract.Columns.TASK_NAME, editTextAddName.text.toString())
+            // Description
+            if (editTextDescription.text.toString() != task.description)
+                values.put(
+                    TaskContract.Columns.TASK_DESCRIPTION,
+                    editTextDescription.text.toString()
+                )
+            // sort order
+            if (sortOrder != task.sortOrder)
+                values.put(TaskContract.Columns.TASK_SORT_ORDER, sortOrder)
+
+            //update the database
+            if (values.size() != 0) {
+                Log.d(TAG, "saveTask: now updating values in database")
+
+                /** using update function from [AppContentProvider.update] */
+                activity?.contentResolver?.update(
+                    TaskContract.buildUriFromId(task.id),
+                    values, null, null
+                )
+            }
+        } else {
+            // Adding a brand new the record/task
+            Log.d(TAG, "saveTask: Adding a new task")
+            if (editTextAddName.text.toString().isNotEmpty()) {
+                values.put(TaskContract.Columns.TASK_NAME, editTextAddName.text.toString())
+                if (editTextDescription.text.toString().isNotEmpty())
+                    values.put(
+                        TaskContract.Columns.TASK_DESCRIPTION,
+                        editTextDescription.text.toString()
+                    )
+                values.put(
+                    TaskContract.Columns.TASK_SORT_ORDER,
+                    sortOrder // --> already checked at the start of the functions
+                )
+                /** using insert function from [AppContentProvider.insert] */
+                activity?.contentResolver?.insert(TaskContract.CONTENT_URI, values)
+            }
+        }
     }
 
     interface OnSaveClickListener {

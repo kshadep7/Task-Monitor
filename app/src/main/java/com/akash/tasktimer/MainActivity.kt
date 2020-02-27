@@ -91,29 +91,6 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
 
     }
 
-    private fun showEditPane() {
-        //the edit task frame layout exits, so show it
-        task_detail_container.visibility = View.VISIBLE
-        // check orientation and show the main fragment (list of tasks)
-        mainFragment.view?.visibility = if (mTwoPane) View.VISIBLE else View.GONE
-
-    }
-
-    private fun removeEditPane(fragment: Fragment? = null) {
-        Log.d(TAG, "removeEditPane: starts")
-
-        if (fragment != null) {
-            supportFragmentManager.beginTransaction()
-                .remove(fragment)
-                .commit()
-        }
-        //setting the visibility of right pane (frame layout)
-        task_detail_container.visibility = if (mTwoPane) View.INVISIBLE else View.GONE
-        //show the left pane --> (main fragment)
-        mainFragment.view?.visibility = View.VISIBLE
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         Log.d(TAG, "onCreateOptionsMenu: Start")
@@ -139,6 +116,15 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.task_detail_container)
+        if (fragment == null || mTwoPane) {
+            super.onBackPressed()
+        } else {
+            removeEditPane(fragment)
+        }
+    }
+
     private fun taskEditRequest(task: Task?) {
         Log.d(TAG, "taskEditRequest: Starts")
 
@@ -156,6 +142,29 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
         Log.d(TAG, "onSaveClicked: start")
         val fragment = supportFragmentManager.findFragmentById(R.id.task_detail_container)
         removeEditPane(fragment)
+    }
+
+    private fun showEditPane() {
+        //the edit task frame layout exits, so show it
+        task_detail_container.visibility = View.VISIBLE
+        // check orientation and show the main fragment (list of tasks)
+        mainFragment.view?.visibility = if (mTwoPane) View.VISIBLE else View.GONE
+
+    }
+
+    private fun removeEditPane(fragment: Fragment? = null) {
+        Log.d(TAG, "removeEditPane: starts")
+
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+        }
+        //setting the visibility of right pane (frame layout)
+        task_detail_container.visibility = if (mTwoPane) View.INVISIBLE else View.GONE
+        //show the left pane --> (main fragment)
+        mainFragment.view?.visibility = View.VISIBLE
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 }
 /*

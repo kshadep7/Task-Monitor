@@ -1,23 +1,34 @@
 package com.akash.tasktimer
 
-import android.content.ContentValues
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
-
+    private var mTwoPane = false // for checking if screen is in landscape mode or in tablet screen.
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate Start")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        mTwoPane = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val fragment = supportFragmentManager.findFragmentById(R.id.task_detail_container)
+        if (fragment != null) {
+            showEditPane()
+        } else {
+            mainFragment.view?.visibility = View.VISIBLE
+            task_detail_container.visibility = if (mTwoPane) View.INVISIBLE else View.GONE
+        }
 
         Log.d(TAG, "onCreate Ends")
 
@@ -80,6 +91,29 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
 
     }
 
+    private fun showEditPane() {
+        //the edit task frame layout exits, so show it
+        task_detail_container.visibility = View.VISIBLE
+        // check orientation and show the main fragment (list of tasks)
+        mainFragment.view?.visibility = if (mTwoPane) View.VISIBLE else View.GONE
+
+    }
+
+    private fun removeEditPane(fragment: Fragment? = null) {
+        Log.d(TAG, "removeEditPane: starts")
+
+        if (fragment != null) {
+            supportFragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+        }
+        //setting the visibility of right pane (frame layout)
+        task_detail_container.visibility = if (mTwoPane) View.INVISIBLE else View.GONE
+        //show the left pane --> (main fragment)
+        mainFragment.view?.visibility = View.VISIBLE
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         Log.d(TAG, "onCreateOptionsMenu: Start")
@@ -97,24 +131,31 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
 //            R.id.menumain_settings -> true
             R.id.mainmenu_addTask -> taskEditRequest(null)
 //            else -> super.onOptionsItemSelected(item)
+            android.R.id.home -> {
+                val fragment = supportFragmentManager.findFragmentById(R.id.task_detail_container)
+                removeEditPane(fragment)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun taskEditRequest(task: Task?){
+    private fun taskEditRequest(task: Task?) {
         Log.d(TAG, "taskEditRequest: Starts")
 
         // create a new fragment
         val newFragment = FragmentAddEdit.newInstance(task)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment, newFragment)
+            .replace(R.id.task_detail_container, newFragment)
             .commit()
 
+        showEditPane()
         Log.d(TAG, "taskEditRequest: Ends")
     }
 
     override fun onSaveClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d(TAG, "onSaveClicked: start")
+        val fragment = supportFragmentManager.findFragmentById(R.id.task_detail_container)
+        removeEditPane(fragment)
     }
 }
 /*

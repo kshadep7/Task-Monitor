@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.fragment_add_edit.*
 import java.lang.RuntimeException
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,6 +30,20 @@ class FragmentAddEdit : Fragment() {
 
         arguments?.let {
             task = it.getParcelable(ARG_TASK)
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onActivityCreated: start")
+        super.onActivityCreated(savedInstanceState)
+
+        if (listener is AppCompatActivity) {
+            val actionBar = (listener as AppCompatActivity).supportActionBar
+            actionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
+        btnSave.setOnClickListener {
+            listener?.onSaveClicked() // calling it in [MainActivity]
         }
     }
 

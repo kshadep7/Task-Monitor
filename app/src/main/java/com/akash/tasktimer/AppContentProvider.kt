@@ -27,7 +27,7 @@ private const val TIMINGS_ID = 201
 private const val TASK_DURATIONS = 400
 private const val TASK_DURATIONS_ID = 401
 
-val CONTENT_AUTHORITY_URI = Uri.parse("content://$CONTENT_AUTHORITY")
+val CONTENT_AUTHORITY_URI: Uri = Uri.parse("content://$CONTENT_AUTHORITY")
 
 class AppContentProvider : ContentProvider() {
 
@@ -74,6 +74,7 @@ class AppContentProvider : ContentProvider() {
         }
     }
 
+    // Content resolver query function
     override fun query(
         uri: Uri,
         projection: Array<out String>?,
@@ -116,6 +117,7 @@ class AppContentProvider : ContentProvider() {
 
         return cursor
     }
+    // Content resolver insert function
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         Log.d(TAG, "insert called")
@@ -157,7 +159,8 @@ class AppContentProvider : ContentProvider() {
         return returnUri
 
     }
-// Content resolver update function
+
+    // Content resolver update function
     override fun update(
         uri: Uri,
         values: ContentValues?,
@@ -220,6 +223,7 @@ class AppContentProvider : ContentProvider() {
         return count
     }
 
+    // Content resolver delete function
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
         Log.d(TAG, "delete: called with Uri: $uri")
         val match = uriMatcher.match(uri)

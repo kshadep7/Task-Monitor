@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/txtTaskName"
+        android:id="@+id/tvTaskName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,7 +21,7 @@
         tools:text="Running" />
 
     <TextView
-        android:id="@+id/txtTaskDescription"
+        android:id="@+id/tvTaskDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -31,7 +31,7 @@
         android:textStyle="normal"
         app:layout_constraintEnd_toStartOf="@+id/btnTaskEdit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTaskName"
+        app:layout_constraintTop_toBottomOf="@+id/tvTaskName"
         tools:text="Running on the hill" />
 
     <ImageButton

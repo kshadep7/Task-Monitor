@@ -44,7 +44,11 @@ class FragmentAddEdit : Fragment() {
         }
 
         btnSave.setOnClickListener {
-            listener?.onSaveClicked() // calling it in [MainActivity]
+            // saving data -> adding new task or editing existing one
+            saveTask()
+            /** Implementing method in [MainActivity.onSaveClicked]*/
+            listener?.onSaveClicked()
+
         }
     }
 

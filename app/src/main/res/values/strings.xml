@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Task Timer</string>
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menutitle_showDurations">Tasks Report</string>
     <string name="menutitle_addTask">Add Task</string>
     <string name="menutitle_settings">Settings</string>
@@ -16,4 +13,6 @@
     <string name="editxt_decription_hint">Task Description (optional)</string>
     <string name="editxt_sortorder_hint">Order (sort low to high)</string>
     <string name="btn_save">Save</string>
+    <string name="new_task_instructions">Instructions</string>
+    <string name="instructions">"Use the add button (+) in the toolbar above to create new tasks.\n\nTasks with lower sort orders will be placed higher up the list.\nTasks with the same sort order will be sorted alphabetically.\n\nTapping a task will start the timer for that task (and will stop the timer for any previous task that was being timed).\n\nEach task has Edit and Delete buttons if you want to change the details or remove the task."</string>
 </resources>

@@ -1,15 +1,18 @@
 package com.akash.tasktimer
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+
 
 private const val TAG = "MainActivity"
 
@@ -165,6 +168,21 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
         //show the left pane --> (main fragment)
         mainFragment.view?.visibility = View.VISIBLE
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        // to hide the keyboard after button pressed
+        hideKeyboard(this)
+    }
+
+    // to hide the keyboard
+    private fun hideKeyboard(activity: Activity) {
+        val inputMethodManager: InputMethodManager =
+            activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        //Find the currently focused view, so we can grab the correct window token from it.
+        var view = activity.currentFocus
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = View(activity)
+        }
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 /*

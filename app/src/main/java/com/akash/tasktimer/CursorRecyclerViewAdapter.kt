@@ -69,7 +69,7 @@ class CursorRecyclerViewAdapter(private var cursor: Cursor?) :
         return count
     }
 
-    private fun swapCursor(newCursor: Cursor?): Cursor? {
+    fun swapCursor(newCursor: Cursor?): Cursor? {
         if (newCursor == cursor) return null
 
         val numItems = itemCount

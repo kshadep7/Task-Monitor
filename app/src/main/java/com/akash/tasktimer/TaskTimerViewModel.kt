@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData
 private const val TAG = "TaskTimerVIewModel"
 
 class TaskTimerViewModel(application: Application) : AndroidViewModel(application) {
+
+
     private val databaseCursor = MutableLiveData<Cursor>()
 
     val cursor: LiveData<Cursor>

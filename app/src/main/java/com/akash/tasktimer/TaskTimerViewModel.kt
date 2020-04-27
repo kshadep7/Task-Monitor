@@ -1,7 +1,10 @@
 package com.akash.tasktimer
 
 import android.app.Application
+import android.database.ContentObserver
 import android.database.Cursor
+import android.net.Uri
+import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -11,6 +14,12 @@ private const val TAG = "TaskTimerVIewModel"
 
 class TaskTimerViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val contentObserver = object : ContentObserver(Handler()) {
+        override fun onChange(selfChange: Boolean, uri: Uri?) {
+            Log.d(TAG, "ContentObserver.onChange called uri: $uri")
+            loadTasks()
+        }
+    }
 
     private val databaseCursor = MutableLiveData<Cursor>()
 
@@ -19,7 +28,19 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
 
     init {
         Log.d(TAG, "init: Android ViewModel Created")
+        Log.d(TAG, "Registering Content Observer")
+        getApplication<Application>().contentResolver.registerContentObserver(
+            TaskContract.CONTENT_URI,
+            true,
+            contentObserver
+        )
         loadTasks()
+    }
+
+    override fun onCleared() {
+        Log.d(TAG, "Android view model onCleared called")
+        Log.d(TAG, "Unregistering Content Observer")
+        getApplication<Application>().contentResolver.unregisterContentObserver(contentObserver)
     }
 
     private fun loadTasks() {

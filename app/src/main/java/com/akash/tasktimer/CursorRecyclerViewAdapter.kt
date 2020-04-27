@@ -12,6 +12,28 @@ import kotlinx.android.synthetic.main.task_list_item.view.*
 
 class TaskViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
     LayoutContainer {
+
+    fun bind(task: Task) {
+
+        containerView.tvTaskName.text = task.name
+        containerView.tvTaskDescription.text = task.description
+        containerView.btnTaskEdit.visibility = View.VISIBLE
+        containerView.btnTaskDelete.visibility = View.VISIBLE
+
+        containerView.btnTaskEdit.setOnClickListener {
+            Log.d(TAG, "edit button tapped with task name: ${task.name}")
+        }
+        containerView.btnTaskDelete.setOnClickListener {
+            Log.d(TAG, "delete button tapped with task name : ${task.name}")
+        }
+
+        containerView.setOnLongClickListener {
+            Log.d(TAG, "view onLongClick called. task name: ${task.name}")
+            true
+        }
+
+    }
+
 }
 
 private const val TAG = "CursorRecyclerViewAdapt"
@@ -53,10 +75,7 @@ class CursorRecyclerViewAdapter(private var cursor: Cursor?) :
             task.id = cursor.getLong(cursor.getColumnIndex(TaskContract.Columns.ID))
 
             // setting the values to views
-            holder.containerView.tvTaskName.text = task.name
-            holder.containerView.tvTaskDescription.text = task.description
-            holder.containerView.btnTaskEdit.visibility = View.VISIBLE     // TODO: add Onclick
-            holder.containerView.btnTaskDelete.visibility = View.VISIBLE   // TODO: add Onclick
+            holder.bind(task)
         }
     }
 

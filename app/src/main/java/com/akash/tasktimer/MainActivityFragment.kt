@@ -22,7 +22,6 @@ private const val TAG = "MainActivityFragment"
 @Suppress("DEPRECATION")
 class MainActivityFragment : Fragment() {
 
-    //    private lateinit var viewModel: TaskTimerViewModel
     private val viewModel by lazy {
         ViewModelProviders.of(activity!!).get(TaskTimerViewModel::class.java)
     }
@@ -31,7 +30,6 @@ class MainActivityFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: called")
-        // I believe the problem is here..!!!! But no sure what exactly it is
         viewModel.cursor.observe(this, Observer { cursor -> rvAdapter.swapCursor(cursor)?.close() })
 
     }

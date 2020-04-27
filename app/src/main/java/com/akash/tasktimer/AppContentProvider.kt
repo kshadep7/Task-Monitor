@@ -155,6 +155,12 @@ class AppContentProvider : ContentProvider() {
             else -> throw IllegalArgumentException("Unknown uri $uri")
 
         }
+        if (recordId > 0) {
+            // something was inserted
+            Log.d(TAG, "New Record inserted with uri: $uri")
+            context?.contentResolver?.notifyChange(uri, null)
+        }
+
         Log.d(TAG, "Exiting insert: returning uri: $returnUri")
         return returnUri
 
@@ -219,6 +225,13 @@ class AppContentProvider : ContentProvider() {
             else -> throw IllegalArgumentException("Unknown uri $uri")
 
         }
+
+        if (count > 0) {
+            // record has been updated
+            Log.d(TAG, " Record has been updated of uri: $uri")
+            context?.contentResolver?.notifyChange(uri, null)
+        }
+
         Log.d(TAG, "Exiting update: returning count: $count")
         return count
     }
@@ -275,6 +288,12 @@ class AppContentProvider : ContentProvider() {
             else -> throw IllegalArgumentException("Unknown uri $uri")
 
         }
+        if (count > 0) {
+            // record has been updated
+            Log.d(TAG, " Record has been deleted of uri: $uri")
+            context?.contentResolver?.notifyChange(uri, null)
+        }
+
         Log.d(TAG, "Exiting delete: returning count: $count")
         return count
     }

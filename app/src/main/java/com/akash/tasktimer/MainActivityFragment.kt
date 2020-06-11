@@ -20,12 +20,17 @@ import kotlinx.android.synthetic.main.fragment_main.*
 private const val TAG = "MainActivityFragment"
 
 @Suppress("DEPRECATION")
-class MainActivityFragment : Fragment() {
+class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickListener {
 
     private val viewModel by lazy {
         ViewModelProviders.of(activity!!).get(TaskTimerViewModel::class.java)
     }
-    private val rvAdapter = CursorRecyclerViewAdapter(null)
+    private val rvAdapter = CursorRecyclerViewAdapter(null, this)
+
+    override fun onAttach(context: Context) {
+        Log.d(TAG, "onAttach: called")
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,19 +53,10 @@ class MainActivityFragment : Fragment() {
         tasksRecyclerView.adapter = rvAdapter
     }
 
-    override fun onAttach(context: Context) {
-        Log.d(TAG, "onAttach: called")
-        super.onAttach(context)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Log.d(TAG, "onActivityCreated: called")
         super.onActivityCreated(savedInstanceState)
-
-//        viewModel = ViewModelProvider(activity!!).get(TaskTimerViewModel::class.java)
-
-//        viewModel.cursor.observe(this, Observer { cursor -> rvAdapter.swapCursor(cursor)?.close() })
-
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -106,6 +102,18 @@ class MainActivityFragment : Fragment() {
     override fun onDetach() {
         Log.d(TAG, "onDetach: called")
         super.onDetach()
+    }
+
+    override fun onEditClick(task: Task) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDeleteClick(task: Task) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTaskLongClick(task: Task) {
+        TODO("Not yet implemented")
     }
 
 }

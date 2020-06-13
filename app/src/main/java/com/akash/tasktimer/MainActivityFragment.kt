@@ -22,6 +22,10 @@ private const val TAG = "MainActivityFragment"
 @Suppress("DEPRECATION")
 class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickListener {
 
+    interface OnTaskEdit {
+        fun onTaskEdit(task: Task)
+    }
+
     private val viewModel by lazy {
         ViewModelProviders.of(activity!!).get(TaskTimerViewModel::class.java)
     }
@@ -30,13 +34,15 @@ class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickLi
     override fun onAttach(context: Context) {
         Log.d(TAG, "onAttach: called")
         super.onAttach(context)
+
+        if (context !is OnTaskEdit)
+            throw RuntimeException("$context must implement OnTaskEdit interface!")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: called")
         viewModel.cursor.observe(this, Observer { cursor -> rvAdapter.swapCursor(cursor)?.close() })
-
     }
 
     override fun onCreateView(
@@ -53,63 +59,12 @@ class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickLi
         tasksRecyclerView.adapter = rvAdapter
     }
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onActivityCreated: called")
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewStateRestored: called")
-        super.onViewStateRestored(savedInstanceState)
-    }
-
-    override fun onStart() {
-        Log.d(TAG, "onStart: called")
-        super.onStart()
-    }
-
-    override fun onResume() {
-        Log.d(TAG, "onResume: called")
-        super.onResume()
-    }
-
-    override fun onPause() {
-        Log.d(TAG, "onPause: called")
-        super.onPause()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        Log.d(TAG, "onSaveInstanceState: called")
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onStop() {
-        Log.d(TAG, "onStop: called")
-        super.onStop()
-    }
-
-    override fun onDestroyView() {
-        Log.d(TAG, "onDestroyView: called")
-        super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        Log.d(TAG, "onDestroy: called")
-        super.onDestroy()
-    }
-
-    override fun onDetach() {
-        Log.d(TAG, "onDetach: called")
-        super.onDetach()
-    }
-
     override fun onEditClick(task: Task) {
-        TODO("Not yet implemented")
+        (activity as OnTaskEdit).onTaskEdit(task)
     }
 
     override fun onDeleteClick(task: Task) {
-        TODO("Not yet implemented")
+        viewModel.deleteTask(task.id)
     }
 
     override fun onTaskLongClick(task: Task) {

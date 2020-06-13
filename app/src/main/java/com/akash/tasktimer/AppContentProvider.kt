@@ -82,7 +82,7 @@ class AppContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor? {
-        Log.d(TAG, "query: called with Uri: $uri")
+        Log.d(TAG, "query: called with uri: $uri")
         val match = uriMatcher.match(uri)
         Log.d(TAG, "query: match with $match")
 
@@ -113,6 +113,7 @@ class AppContentProvider : ContentProvider() {
         val db = AppDatabase.getInstance(context!!).readableDatabase
         val cursor =
             queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder)
+        Log.d(TAG, "query: cursor: $cursor")
         Log.d(TAG, "query: rows in returned cursor = ${cursor.count}")
 
         return cursor

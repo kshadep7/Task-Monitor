@@ -16,7 +16,7 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val contentObserver = object : ContentObserver(Handler()) {
         override fun onChange(selfChange: Boolean, uri: Uri?) {
-            Log.d(TAG, "ContentObserver.onChange called uri: $uri")
+            Log.d(TAG, "onChange: content observer called with uri: $uri")
             loadTasks()
         }
     }
@@ -39,12 +39,13 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
 
     override fun onCleared() {
         Log.d(TAG, "Android view model onCleared called")
-        Log.d(TAG, "Unregistering Content Observer")
+        Log.d(TAG, "onCleared: Unregistering Content Observer")
+
         getApplication<Application>().contentResolver.unregisterContentObserver(contentObserver)
     }
 
     private fun loadTasks() {
-        Log.d(TAG, "loadTasks: called")
+        Log.d(TAG, "loadTasks: Loading tasks")
 
         val projection = arrayOf(
             TaskContract.Columns.ID,
@@ -63,6 +64,14 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
         )
 
         databaseCursor.postValue(cursor)
+    }
 
+    fun deleteTask(taskId: Long) {
+        /** get cursor to delete of a particular task by calling [AppContentProvider.delete] */
+        getApplication<Application>().contentResolver.delete(
+            TaskContract.buildUriFromId(taskId),
+            null,
+            null
+        )
     }
 }

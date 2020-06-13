@@ -25,12 +25,45 @@ class FragmentAddEdit : Fragment() {
     private var task: Task? = null
     private var listener: OnSaveClickListener? = null
 
+    override fun onAttach(context: Context) {
+        Log.d(TAG, "onAttach: starts")
+        super.onAttach(context)
+        if (context is OnSaveClickListener)
+            listener = context
+        else throw RuntimeException(context.toString() + "must implement OnSaveClickListener")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: starts")
         super.onCreate(savedInstanceState)
 
         arguments?.let {
             task = it.getParcelable(ARG_TASK)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(TAG, "onCreateView: starts")
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_add_edit, container, false)
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (savedInstanceState == null) {
+            val task = task
+            if (task != null) {
+                Log.d(TAG, "onViewCreated: savedInstanceState Bundle info -> $task")
+                editTextAddName.setText(task.name)
+                editTextDescription.setText(task.description)
+                editTextSortorder.setText(task.sortOrder.toString())
+            } else {
+                //Do Nothing or add or edit the task.
+                Log.d(TAG, "onViewCreated: No args, adding new task")
+            }
         }
     }
 
@@ -50,39 +83,6 @@ class FragmentAddEdit : Fragment() {
             listener?.onSaveClicked()
 
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        Log.d(TAG, "onCreateView: starts")
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_edit, container, false)
-    }
-
-    @SuppressLint("SetTextI18n")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            val task = task
-            if (task != null) {
-                Log.d(TAG, "onViewCreated: savedInstanceState Bundle info -> $task")
-                editTextAddName.setText(task.name)
-                editTextDescription.setText(task.description)
-                editTextSortorder.setText(task.sortOrder.toString())
-            } else {
-                //Do Nothing or add or edit the task.
-                Log.d(TAG, "onViewCreated: No args, adding new task")
-            }
-        }
-    }
-
-    override fun onAttach(context: Context) {
-        Log.d(TAG, "onAttach: starts")
-        super.onAttach(context)
-        if (context is OnSaveClickListener)
-            listener = context
-        else throw RuntimeException(context.toString() + "must implement OnSaveClickListener")
     }
 
     override fun onDetach() {

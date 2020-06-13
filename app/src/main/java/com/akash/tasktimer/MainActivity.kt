@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.content_main.*
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
+class MainActivity : AppCompatActivity(),
+    FragmentAddEdit.OnSaveClickListener, MainActivityFragment.OnTaskEdit {
     private var mTwoPane = false // for checking if screen is in landscape mode or in tablet screen.
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate Start")
@@ -77,6 +78,11 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
         }
     }
 
+    override fun onTaskEdit(task: Task) {
+        Log.d(TAG, "onTaskEdit: $task")
+        taskEditRequest(task)
+    }
+
     private fun taskEditRequest(task: Task?) {
         Log.d(TAG, "taskEditRequest: Starts")
 
@@ -133,4 +139,5 @@ class MainActivity : AppCompatActivity(), FragmentAddEdit.OnSaveClickListener {
         }
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
 }

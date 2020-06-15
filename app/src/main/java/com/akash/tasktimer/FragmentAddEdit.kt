@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_add_edit.*
+import kotlin.concurrent.thread
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_TASK = "task"
@@ -119,10 +120,12 @@ class FragmentAddEdit : Fragment() {
                 Log.d(TAG, "saveTask: now updating values in database")
 
                 /** using update function from [AppContentProvider.update] */
-                activity?.contentResolver?.update(
-                    TaskContract.buildUriFromId(task.id),
-                    values, null, null
-                )
+                thread {
+                    activity?.contentResolver?.update(
+                        TaskContract.buildUriFromId(task.id),
+                        values, null, null
+                    )
+                }
             }
         } else {
             // Adding a brand new the record/task
@@ -139,7 +142,9 @@ class FragmentAddEdit : Fragment() {
                     sortOrder // --> already checked at the start of the functions
                 )
                 /** using insert function from [AppContentProvider.insert] */
-                activity?.contentResolver?.insert(TaskContract.CONTENT_URI, values)
+                thread {
+                    activity?.contentResolver?.insert(TaskContract.CONTENT_URI, values)
+                }
             }
         }
     }

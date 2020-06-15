@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlin.concurrent.thread
 
 private const val TAG = "TaskTimerVIewModel"
 
@@ -37,12 +38,6 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
         loadTasks()
     }
 
-    override fun onCleared() {
-        Log.d(TAG, "Android view model onCleared called")
-        Log.d(TAG, "onCleared: Unregistering Content Observer")
-
-        getApplication<Application>().contentResolver.unregisterContentObserver(contentObserver)
-    }
 
     private fun loadTasks() {
         Log.d(TAG, "loadTasks: Loading tasks")
@@ -57,21 +52,31 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
         val sortOrder = "${TaskContract.Columns.TASK_SORT_ORDER}, ${TaskContract.Columns.TASK_NAME}"
 
         /** get cursor of a particular task by calling [AppContentProvider.query] */
-
-        val cursor = getApplication<Application>().contentResolver.query(
-            TaskContract.CONTENT_URI,
-            projection, null, null, sortOrder
-        )
-
-        databaseCursor.postValue(cursor)
+        thread {
+            val cursor = getApplication<Application>().contentResolver.query(
+                TaskContract.CONTENT_URI,
+                projection, null, null, sortOrder
+            )
+            databaseCursor.postValue(cursor)
+        }
     }
 
     fun deleteTask(taskId: Long) {
         /** get cursor to delete of a particular task by calling [AppContentProvider.delete] */
-        getApplication<Application>().contentResolver.delete(
-            TaskContract.buildUriFromId(taskId),
-            null,
-            null
-        )
+        Log.d(TAG, "deleteTask: deleting task using different thread")
+        thread {
+            getApplication<Application>().contentResolver.delete(
+                TaskContract.buildUriFromId(taskId),
+                null,
+                null
+            )
+        }
+    }
+
+    override fun onCleared() {
+        Log.d(TAG, "Android view model onCleared called")
+        Log.d(TAG, "onCleared: Unregistering Content Observer")
+
+        getApplication<Application>().contentResolver.unregisterContentObserver(contentObserver)
     }
 }

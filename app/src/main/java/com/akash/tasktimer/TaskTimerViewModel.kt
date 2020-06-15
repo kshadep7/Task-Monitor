@@ -9,7 +9,8 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlin.concurrent.thread
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 private const val TAG = "TaskTimerVIewModel"
 
@@ -52,7 +53,7 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
         val sortOrder = "${TaskContract.Columns.TASK_SORT_ORDER}, ${TaskContract.Columns.TASK_NAME}"
 
         /** get cursor of a particular task by calling [AppContentProvider.query] */
-        thread {
+        GlobalScope.launch {
             val cursor = getApplication<Application>().contentResolver.query(
                 TaskContract.CONTENT_URI,
                 projection, null, null, sortOrder
@@ -64,7 +65,7 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
     fun deleteTask(taskId: Long) {
         /** get cursor to delete of a particular task by calling [AppContentProvider.delete] */
         Log.d(TAG, "deleteTask: deleting task using different thread")
-        thread {
+        GlobalScope.launch {
             getApplication<Application>().contentResolver.delete(
                 TaskContract.buildUriFromId(taskId),
                 null,

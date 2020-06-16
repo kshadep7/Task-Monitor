@@ -1,7 +1,6 @@
 package com.akash.tasktimer
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_add_edit.*
-import kotlin.concurrent.thread
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_TASK = "task"
@@ -22,9 +21,13 @@ private const val TAG = "Fragment Add Edit"
  * Use the [FragmentAddEdit.newInstance] factory method to
  * create an instance of this fragment.
  */
+@Suppress("DEPRECATION")
 class FragmentAddEdit : Fragment() {
     private var task: Task? = null
     private var listener: OnSaveClickListener? = null
+    private val viewModel by lazy {
+        ViewModelProviders.of(activity!!).get(TaskTimerViewModel::class.java)
+    }
 
     override fun onAttach(context: Context) {
         Log.d(TAG, "onAttach: starts")
@@ -93,6 +96,32 @@ class FragmentAddEdit : Fragment() {
     }
 
     private fun saveTask() {
+        // creating a new task using taskFromUi method
+
+        val newTask = taskFromUi()
+        // check if the newTask is equal to old task 
+        if (newTask != task) {
+            Log.d(TAG, "saveTask: saving a new task with id: ${newTask.id}")
+            task = viewModel.saveTake(newTask)
+            Log.d(TAG, "saveTask: task saved, id: ${task!!.id}")
+        }
+    }
+
+    private fun taskFromUi(): Task {
+        val sortOrder =
+            if (editTextSortorder.text.isNotEmpty())
+                Integer.parseInt(editTextSortorder.text.toString())
+            else 0
+
+        val newTask =
+            Task(editTextAddName.text.toString(), editTextDescription.text.toString(), sortOrder)
+        newTask.id = task?.id ?: 0
+
+        return newTask
+    }
+
+/*
+    private fun saveTask() {
         // to save the task details or to update the existing one
         val values = ContentValues()
         val task = task
@@ -119,7 +148,9 @@ class FragmentAddEdit : Fragment() {
             if (values.size() != 0) {
                 Log.d(TAG, "saveTask: now updating values in database")
 
-                /** using update function from [AppContentProvider.update] */
+                */
+    /** using update function from [AppContentProvider.update] *//*
+
                 thread {
                     activity?.contentResolver?.update(
                         TaskContract.buildUriFromId(task.id),
@@ -141,13 +172,16 @@ class FragmentAddEdit : Fragment() {
                     TaskContract.Columns.TASK_SORT_ORDER,
                     sortOrder // --> already checked at the start of the functions
                 )
-                /** using insert function from [AppContentProvider.insert] */
+                */
+    /** using insert function from [AppContentProvider.insert] *//*
+
                 thread {
                     activity?.contentResolver?.insert(TaskContract.CONTENT_URI, values)
                 }
             }
         }
     }
+*/
 
     interface OnSaveClickListener {
         fun onSaveClicked()

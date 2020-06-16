@@ -1,6 +1,7 @@
 package com.akash.tasktimer
 
 import android.app.Application
+import android.content.ContentValues
 import android.database.ContentObserver
 import android.database.Cursor
 import android.net.Uri
@@ -74,10 +75,46 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    fun saveTake(newTask: Task): Task? {
+        Log.d(TAG, "saveTake: ViewModels saveTask method-->")
+        val values = ContentValues()
+
+        // Not saving a task record without name
+        if (newTask.name.isNotEmpty()) {
+            values.put(TaskContract.Columns.TASK_NAME, newTask.name)
+            values.put(TaskContract.Columns.TASK_DESCRIPTION, newTask.description)
+            values.put(TaskContract.Columns.TASK_SORT_ORDER, newTask.sortOrder)
+            // if task id is 0 then create new task record
+            if (newTask.id == 0L) {
+                GlobalScope.launch {
+                    val uri = getApplication<Application>().contentResolver.insert(
+                        TaskContract.CONTENT_URI,
+                        values
+                    )
+                    if (uri != null) {
+                        newTask.id = TaskContract.getId(uri);
+                        Log.d(TAG, "saveTake: new task record created with id: ${newTask.id}")
+                    }
+                }
+            } else {
+                // updating the task record
+                GlobalScope.launch {
+                    Log.d(TAG, "saveTake: updating task record")
+                    getApplication<Application>().contentResolver.update(
+                        TaskContract.buildUriFromId(newTask.id),
+                        values, null, null
+                    )
+                }
+            }
+        }
+        return newTask
+    }
+
     override fun onCleared() {
         Log.d(TAG, "Android view model onCleared called")
         Log.d(TAG, "onCleared: Unregistering Content Observer")
 
         getApplication<Application>().contentResolver.unregisterContentObserver(contentObserver)
     }
+
 }

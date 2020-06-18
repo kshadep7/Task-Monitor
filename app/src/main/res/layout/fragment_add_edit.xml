@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/edtxt_addname_hint"
+        android:hint="@string/editText_addName_hint"
         android:inputType="textNoSuggestions"
         android:maxLength="64" />
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/editxt_decription_hint"
+        android:hint="@string/editText_description_hint"
         android:inputType="textMultiLine"
         android:maxLength="256" />
 
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/editxt_sortorder_hint"
+        android:hint="@string/editText_sortOrder_hint"
         android:inputType="number"
         android:maxLength="9" />
 

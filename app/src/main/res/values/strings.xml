@@ -1,18 +1,22 @@
 <resources>
     <string name="app_name">Task Timer</string>
     <string name="action_settings">Settings</string>
-    <string name="menutitle_showDurations">Tasks Report</string>
-    <string name="menutitle_addTask">Add Task</string>
-    <string name="menutitle_settings">Settings</string>
-    <string name="menutitle_about">App Info</string>
-    <string name="menutitle_generate">Generate Data</string>
+    <string name="menuTitle_showDurations">Tasks Report</string>
+    <string name="menuTitle_addTask">Add Task</string>
+    <string name="menuTitle_settings">Settings</string>
+    <string name="menuTitle_about">App Info</string>
+    <string name="menuTitle_generate">Generate Data</string>
     <string name="no_task_message">No Task Selected</string>
     <string name="btnTaskEdit">To edit the task details</string>
     <string name="btnTaskDelete">To delete the task</string>
-    <string name="edtxt_addname_hint">Task Name: Required</string>
-    <string name="editxt_decription_hint">Task Description (optional)</string>
-    <string name="editxt_sortorder_hint">Order (sort low to high)</string>
+    <string name="editText_addName_hint">Task Name: Required</string>
+    <string name="editText_description_hint">Task Description (optional)</string>
+    <string name="editText_sortOrder_hint">Order (sort low to high)</string>
     <string name="btn_save">Save</string>
     <string name="new_task_instructions">Instructions</string>
     <string name="instructions">"Use the add button (+) in the toolbar above to create new tasks.\n\nTasks with lower sort orders will be placed higher up the list.\nTasks with the same sort order will be sorted alphabetically.\n\nTapping a task will start the timer for that task (and will stop the timer for any previous task that was being timed).\n\nEach task has Edit and Delete buttons if you want to change the details or remove the task."</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_dialog_positive_value">Delete</string>
+    <string name="delete_dialog_message">Deleting will also delete time associated with task id %1$d: %2$s</string>
 </resources>

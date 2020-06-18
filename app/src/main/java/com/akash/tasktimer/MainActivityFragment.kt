@@ -18,9 +18,13 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 
 private const val TAG = "MainActivityFragment"
+private const val DIALOG_ID_DELETE = 1
+private const val DIALOG_TASK_ID = "task_id"
 
 @Suppress("DEPRECATION")
-class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickListener {
+class MainActivityFragment : Fragment(),
+    CursorRecyclerViewAdapter.OnTaskClickListener,
+    AppDialog.DialogEvents {
 
     interface OnTaskEdit {
         fun onTaskEdit(task: Task)
@@ -64,11 +68,36 @@ class MainActivityFragment : Fragment(), CursorRecyclerViewAdapter.OnTaskClickLi
     }
 
     override fun onDeleteClick(task: Task) {
-        viewModel.deleteTask(task.id)
+        val args = Bundle().apply {
+            putInt(DIALOG_ID, DIALOG_ID_DELETE)
+            putString(
+                DIALOG_MSG,
+                getString(R.string.delete_dialog_message, task.id, task.name)
+            )
+            putInt(DIALOG_POSITIVE_RID, R.string.delete_dialog_positive_value)
+            putLong(DIALOG_TASK_ID, task.id)
+        }
+        val dialog = AppDialog()
+        dialog.arguments = args
+        dialog.show(childFragmentManager, null)
     }
 
     override fun onTaskLongClick(task: Task) {
         TODO("Not yet implemented")
+    }
+
+    override fun onPositiveDialogResult(dialogId: Int, bundle: Bundle) {
+        Log.d(TAG, "onPositiveDialogResult: called with dialogId: $dialogId")
+        val taskId = bundle.getLong(DIALOG_TASK_ID)
+        //check if dialog is same as App dialog class is a general purpose class
+        if (dialogId == DIALOG_ID_DELETE) {
+            if (BuildConfig.DEBUG && taskId == 0L) throw AssertionError("Task ID is zero")
+            viewModel.deleteTask(taskId)
+        }
+    }
+
+    override fun onNegativeDialogResult(dialogId: Int, bundle: Bundle) {
+        Log.d(TAG, "onNegativeDialogResult: called with dialogId: $dialogId")
     }
 
 }

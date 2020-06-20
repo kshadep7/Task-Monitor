@@ -8,3 +8,5 @@ Which are:
 * Deleting a task
 
 ### Preview
+
+<img src="https://github.com/kshadep7/Task-Monitor/blob/master/TMapp.mov" width="300" height = "500"/>

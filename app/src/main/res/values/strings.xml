@@ -19,4 +19,7 @@
     <string name="cancel">Cancel</string>
     <string name="delete_dialog_positive_value">Delete</string>
     <string name="delete_dialog_message">Deleting will also delete time associated with task id %1$d: %2$s</string>
+    <string name="cancel_edit_dialog_message">You have unsaved changes. Do you want to continue editing or abandon changes?</string>
+    <string name="cancel_edit_dialog_positive_caption">Abandon Changes</string>
+    <string name="cancel_edit_dialog_negative_caption">Continue Editing</string>
 </resources>

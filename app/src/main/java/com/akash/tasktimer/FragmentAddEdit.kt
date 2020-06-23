@@ -107,6 +107,13 @@ class FragmentAddEdit : Fragment() {
         }
     }
 
+    fun isDirty(): Boolean {
+        val newTask = taskFromUi()
+        return (newTask != task) && (newTask.name.isNotBlank()
+                || newTask.description.isNotBlank()
+                || newTask.sortOrder != 0)
+    }
+
     private fun taskFromUi(): Task {
         val sortOrder =
             if (editTextSortorder.text.isNotEmpty())

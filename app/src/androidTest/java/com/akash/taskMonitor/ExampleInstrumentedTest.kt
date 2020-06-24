@@ -1,4 +1,4 @@
-package com.akash.tasktimer
+package com.akash.taskMonitor
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

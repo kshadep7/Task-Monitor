@@ -1,4 +1,4 @@
-package com.akash.tasktimer
+package com.akash.taskMonitor
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -16,7 +16,7 @@ import android.util.Log
 
 private const val TAG = "AppContentProvider"
 
-private const val CONTENT_AUTHORITY = "com.akash.tasktimer.provider"
+private const val CONTENT_AUTHORITY = "com.akash.taskMonitor.provider"
 
 private const val TASKS = 100
 private const val TASKS_ID = 101

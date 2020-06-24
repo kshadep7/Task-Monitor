@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.akash.tasktimer">
+    package="com.akash.taskMonitor">
 
     <application
         android:allowBackup="true"
@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.akash.taskMonitor.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,8 +21,8 @@
         </activity>
 
         <provider
-            android:authorities="com.akash.tasktimer.provider"
-            android:name="com.akash.tasktimer.AppContentProvider"
+            android:authorities="com.akash.taskMonitor.provider"
+            android:name="com.akash.taskMonitor.AppContentProvider"
             android:exported="false" />
         <!--exported -> to set if other apps can use this app contents or not-->
     </application>

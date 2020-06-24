@@ -1,6 +1,7 @@
-package com.akash.tasktimer
+package com.akash.taskMonitor
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,6 +24,12 @@ class MainActivity : AppCompatActivity(),
     MainActivityFragment.OnTaskEdit,
     AppDialog.DialogEvents {
     private var mTwoPane = false // for checking if screen is in landscape mode or in tablet screen.
+
+    // To respect the scope of activity to avoid memory leaks
+    // remember to remove any references of aboutDialog in onStop()
+    // eg. Orientation change
+    private var aboutDialog: AlertDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate Start")
         super.onCreate(savedInstanceState)
@@ -64,6 +72,7 @@ class MainActivity : AppCompatActivity(),
 //            R.id.menumain_settings -> true
             R.id.mainmenu_addTask -> taskEditRequest(null)
 //            else -> super.onOptionsItemSelected(item)
+            R.id.mainmenu_about -> showAboutDialog()
             android.R.id.home -> {
                 val fragment = findFragmentById(R.id.task_detail_container)
 //                removeEditPane(fragment)
@@ -80,6 +89,25 @@ class MainActivity : AppCompatActivity(),
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showAboutDialog() {
+        val aboutView = layoutInflater.inflate(R.layout.about, null, false)
+        val alertBuilder = AlertDialog.Builder(this)
+        alertBuilder.setTitle(R.string.app_name)
+        alertBuilder.setIcon(R.mipmap.ic_launcher)
+
+        aboutDialog = alertBuilder.setView(aboutView).create()
+        aboutDialog?.setCanceledOnTouchOutside(true)
+
+
+        // not using directly using sythetic import for about_version textview
+        // it doesnt work in alert dialogs
+        val aboutVersion = aboutView.findViewById<TextView>(R.id.about_version)
+        //setting the version name
+//        about_version.text = BuildConfig.VERSION_NAME --> Doesn't work!!!
+        aboutVersion.text = BuildConfig.VERSION_NAME
+        aboutDialog?.show()
     }
 
     override fun onBackPressed() {
@@ -115,7 +143,7 @@ class MainActivity : AppCompatActivity(),
             .replace(R.id.task_detail_container, newFragment)
             .commit()
 */
-        // extention func
+        // extension func
         replaceFragment(newFragment, R.id.task_detail_container)
 
         showEditPane()
@@ -184,4 +212,9 @@ class MainActivity : AppCompatActivity(),
         // dismiss the dialog
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (aboutDialog?.isShowing == true)
+            aboutDialog?.dismiss()
+    }
 }

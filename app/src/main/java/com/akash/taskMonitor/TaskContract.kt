@@ -1,4 +1,4 @@
-package com.akash.tasktimer
+package com.akash.taskMonitor
 
 import android.content.ContentUris
 import android.net.Uri

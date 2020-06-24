@@ -1,4 +1,4 @@
-package com.akash.tasktimer
+package com.akash.taskMonitor
 
 import android.app.Application
 import android.content.ContentValues

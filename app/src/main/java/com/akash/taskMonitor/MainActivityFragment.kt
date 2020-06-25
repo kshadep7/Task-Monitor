@@ -72,9 +72,9 @@ class MainActivityFragment : Fragment(),
             putInt(DIALOG_ID, DIALOG_ID_DELETE)
             putString(
                 DIALOG_MSG,
-                getString(R.string.delete_dialog_message, task.id, task.name)
+                getString(R.string.dialog_delete_message, task.id, task.name)
             )
-            putInt(DIALOG_POSITIVE_RID, R.string.delete_dialog_positive_value)
+            putInt(DIALOG_POSITIVE_RID, R.string.dialog_delete_positive_value)
             putLong(DIALOG_TASK_ID, task.id)
         }
         val dialog = AppDialog()

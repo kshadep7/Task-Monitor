@@ -2,7 +2,10 @@ package com.akash.taskMonitor
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -10,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -107,6 +111,20 @@ class MainActivity : AppCompatActivity(),
         //setting the version name
 //        about_version.text = BuildConfig.VERSION_NAME --> Doesn't work!!!
         aboutVersion.text = BuildConfig.VERSION_NAME
+        val weburl: TextView? = aboutView.findViewById(R.id.about_url)
+        // Adding click listner to the web url for backward compability
+        // Using nullable weburl as it might not be present for API 29 and higher
+        weburl?.setOnClickListener { v ->
+            val intent = Intent(Intent.ACTION_VIEW)
+            val url = (v as TextView).text.toString()
+            intent.data = Uri.parse(url)
+            try {
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this, R.string.no_application_found_err_msg, Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
         aboutDialog?.show()
     }
 

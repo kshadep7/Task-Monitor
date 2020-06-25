@@ -32,14 +32,11 @@
         android:text="@string/about_copyright"
         android:textColor="@color/colorPrimary" />
 
-    <TextView
-        android:id="@+id/about_weblink"
+    <include
+        layout="@layout/about_web_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:autoLink="web"
-        android:text="@string/about_weblink"
-        android:textColor="@color/colorPrimary" />
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/about_support_email"

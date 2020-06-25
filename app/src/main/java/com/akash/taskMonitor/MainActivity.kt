@@ -73,7 +73,10 @@ class MainActivity : AppCompatActivity(),
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-//            R.id.menumain_settings -> true
+            R.id.menumain_settings -> {
+                val dialog = SettingDialog()
+                dialog.show(supportFragmentManager, null)
+            }
             R.id.mainmenu_addTask -> taskEditRequest(null)
 //            else -> super.onOptionsItemSelected(item)
             R.id.mainmenu_about -> showAboutDialog()

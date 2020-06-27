@@ -6,7 +6,7 @@ import android.provider.BaseColumns
 
 object TimingContract {
 
-    internal const val TABLE_NAME = "timing"
+    internal const val TABLE_NAME = "timings"
 
     //URI to access timing table
 

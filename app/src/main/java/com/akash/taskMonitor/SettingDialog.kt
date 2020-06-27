@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.preference.PreferenceManager
 import kotlinx.android.synthetic.main.settings_dialog.*
@@ -27,6 +28,17 @@ class SettingDialog : AppCompatDialogFragment() {
     private var firstDay = defaultFirstDayOfWeek
     private var ignoreLessThan = SETTING_DEFAULT_IGNORE_LESS_THAN
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate: called")
+        super.onCreate(savedInstanceState)
+        setStyle(AppCompatDialogFragment.STYLE_NORMAL, R.style.SettingsAppDialog)
+        // preventing fragment to get destroyed when activity is destroyed
+        // because sometimes it can be very expensive to fetch data and display in fragments
+        // an alternative can be to use view models but again creating fragment again is also an
+        // expensive overhead
+        retainInstance = true
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,41 +51,80 @@ class SettingDialog : AppCompatDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: setting dailog is inflated")
         super.onViewCreated(view, savedInstanceState)
-
+        dialog?.setTitle(R.string.action_settings)
         //setting click listners for ok and cancel buttons
         buttonOk.setOnClickListener {
             saveValues()
             dismiss()
         }
+        buttonCancel.setOnClickListener { dismiss() }
 
-        buttonCancel.setOnClickListener {
-            dismiss()
-        }
+        // Setting change listener to seekbar
+        ignoreSeconds.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                if (progress < 12) {
+                    ignoreSecondsTitle.text = getString(
+                        R.string.settingsIgnoreSecondsTitle,
+                        deltas[progress],
+                        resources.getQuantityString(
+                            R.plurals.settingsLittleUnits,
+                            deltas[progress]
+                        )
+                    )
+                } else {
+                    val minutes = deltas[progress] / 60
+                    ignoreSecondsTitle.text = getString(
+                        R.string.settingsIgnoreSecondsTitle,
+                        minutes,
+                        resources.getQuantityString(R.plurals.settingsBigUnits, minutes)
+                    )
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // don't need this
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                // or this
+            }
+
+        })
+
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onViewStateRestored: called")
         super.onViewStateRestored(savedInstanceState)
-        readValues()
-        firstDaySpinner.setSelection(firstDay - GregorianCalendar.SUNDAY)
-        //converting the seconds value to index values of deltas array
-        val seekBarValue = deltas.binarySearch(ignoreLessThan)
-        if (seekBarValue < 0)
-            throw IndexOutOfBoundsException("No $seekBarValue present in the deltas array")
-        ignoreSeconds.max = deltas.size - 1
-        ignoreSeconds.progress = seekBarValue
-        Log.d(TAG, "onViewStateRestored: Seekbar value set to $seekBarValue")
+        // as the fragment is not getting destroyed
+        // making sure the the values are retained on the dialog
+        if (savedInstanceState == null) {
+            readValues()
+            firstDaySpinner.setSelection(firstDay - GregorianCalendar.SUNDAY)
+            //converting the seconds value to index values of deltas array
+            val seekBarValue = deltas.binarySearch(ignoreLessThan)
+            if (seekBarValue < 0)
+                throw IndexOutOfBoundsException("No $seekBarValue present in the deltas array")
+            ignoreSeconds.max = deltas.size - 1
+            ignoreSeconds.progress = seekBarValue
+            Log.d(TAG, "onViewStateRestored: Seekbar value set to $seekBarValue")
 
-        if (ignoreLessThan < 60) {
-            ignoreSecondsTitle.text = getString(
-                R.string.settingsIgnoreSecondsTitle, ignoreLessThan,
-                resources.getQuantityString(R.plurals.settingsLittleUnits, ignoreLessThan)
-            )
-        } else {
-            val min = ignoreLessThan / 60
-            ignoreSecondsTitle.text = getString(
-                R.string.settingsIgnoreSecondsTitle, min,
-                resources.getQuantityString(R.plurals.settingsBigUnits, min)
-            )
+            if (ignoreLessThan < 60) {
+                ignoreSecondsTitle.text = getString(
+                    R.string.settingsIgnoreSecondsTitle, ignoreLessThan,
+                    resources.getQuantityString(R.plurals.settingsLittleUnits, ignoreLessThan)
+                )
+            } else {
+                val min = ignoreLessThan / 60
+                ignoreSecondsTitle.text = getString(
+                    R.string.settingsIgnoreSecondsTitle, min,
+                    resources.getQuantityString(R.plurals.settingsBigUnits, min)
+                )
+            }
         }
     }
 
@@ -104,5 +155,10 @@ class SettingDialog : AppCompatDialogFragment() {
 
             apply()
         }
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy: called")
+        super.onDestroy()
     }
 }

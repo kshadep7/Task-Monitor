@@ -24,6 +24,7 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    private var currentTiming: Timing? = null
     private val databaseCursor = MutableLiveData<Cursor>()
 
     val cursor: LiveData<Cursor>
@@ -108,6 +109,63 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
         return newTask
+    }
+
+    fun timeTask(task: Task) {
+        Log.d(TAG, "timeTask: called")
+        //smart casting
+        val timingRecord = currentTiming
+
+        //check if its a new task or existing task
+        if (timingRecord == null) {
+            // no task being timed, so time this task
+            currentTiming = Timing(task.id)
+            saveTiming(currentTiming!!)
+        } else {
+            // task is being timed, so save it
+            timingRecord.setDuration()
+            saveTiming(timingRecord)
+            // if same task is clicked then stop timing that task
+            // else update that record
+            if (task.id == timingRecord.taskId) {
+                currentTiming = null
+            } else {
+                // instead of using !! on currTimnig --> saveTiming(currtiming!!)
+                val newTiming = Timing(task.id)
+                saveTiming(newTiming)
+                currentTiming = newTiming
+            }
+        }
+    }
+
+    private fun saveTiming(currentTiming: Timing) {
+        Log.d(TAG, "saveTiming: called")
+        //check if new task is inserted or existed task is updated
+        val isInserting = currentTiming.duration == 0L
+
+        // add values
+        val values = ContentValues().apply {
+            if (isInserting) {
+                put(TimingContract.Columns.TIMIMG_TASK_ID, currentTiming.taskId)
+                put(TimingContract.Columns.TIMING_START_TIME, currentTiming.startTime)
+            }
+            put(TimingContract.Columns.TIMIMG_DURATION, currentTiming.duration)
+        }
+        GlobalScope.launch {
+            if (isInserting) {
+                val uri = getApplication<Application>().contentResolver.insert(
+                    TimingContract.CONTENT_URI,
+                    values
+                )
+                if (uri != null)
+                    currentTiming.id = TimingContract.getId(uri)
+            } else {
+                getApplication<Application>().contentResolver.update(
+                    TimingContract.buildUriFromId(currentTiming.id),
+                    values, null, null
+                )
+            }
+        }
     }
 
     override fun onCleared() {

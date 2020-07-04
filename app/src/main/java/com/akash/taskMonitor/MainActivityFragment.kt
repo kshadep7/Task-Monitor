@@ -31,7 +31,7 @@ class MainActivityFragment : Fragment(),
     }
 
     private val viewModel by lazy {
-        ViewModelProviders.of(activity!!).get(TaskTimerViewModel::class.java)
+        ViewModelProviders.of(requireActivity()).get(TaskTimerViewModel::class.java)
     }
     private val rvAdapter = CursorRecyclerViewAdapter(null, this)
 
@@ -83,7 +83,8 @@ class MainActivityFragment : Fragment(),
     }
 
     override fun onTaskLongClick(task: Task) {
-        TODO("Not yet implemented")
+        Log.d(TAG, "onTaskLongClick: called")
+        viewModel.timeTask(task)
     }
 
     override fun onPositiveDialogResult(dialogId: Int, bundle: Bundle) {

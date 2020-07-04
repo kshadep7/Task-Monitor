@@ -9,7 +9,7 @@
     <string name="menuTitle_generate">Generate Data</string>
 
     <!--    Edit Task-->
-    <string name="no_task_message">No Task Selected</string>
+    <string name="no_task_message">No Task Being Timed</string>
     <string name="btnTaskEdit">To edit the task details</string>
     <string name="btnTaskDelete">To delete the task</string>
     <string name="editText_addName_hint">Task Name: Required</string>
@@ -36,4 +36,5 @@
     <string name="about_support_email">"For support, email: \nakashadep.business@gmail.com "</string>
     <string name="about_credits">The icon <b>Time Clock</b> was used from <b>openclipart.com</b></string>
     <string name="no_application_found_err_msg">No browser application found</string>
+    <string name="current_timing_task">Currently Timing: %1$s</string>
 </resources>

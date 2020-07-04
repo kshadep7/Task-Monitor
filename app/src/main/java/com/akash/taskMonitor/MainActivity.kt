@@ -16,13 +16,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.fragment_main.*
 
 
 private const val TAG = "MainActivity"
 private const val DIALOG_CANCEL_EDIT_ID = 1
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(),
     FragmentAddEdit.OnSaveClickListener,
     MainActivityFragment.OnTaskEdit,
@@ -33,6 +37,10 @@ class MainActivity : AppCompatActivity(),
     // remember to remove any references of aboutDialog in onStop()
     // eg. Orientation change
     private var aboutDialog: AlertDialog? = null
+
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(TaskTimerViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate Start")
@@ -57,6 +65,13 @@ class MainActivity : AppCompatActivity(),
             task_detail_container.visibility = if (mTwoPane) View.INVISIBLE else View.GONE
         }
 
+        viewModel.timing.observe(this, Observer { timing ->
+            currentTask.text = if (timing != null) {
+                getString(R.string.current_timing_task, timing)
+            } else {
+                getString(R.string.no_task_message)
+            }
+        })
         Log.d(TAG, "onCreate: Ends")
     }
 

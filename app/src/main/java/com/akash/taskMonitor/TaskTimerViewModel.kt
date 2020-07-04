@@ -26,9 +26,13 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
 
     private var currentTiming: Timing? = null
     private val databaseCursor = MutableLiveData<Cursor>()
+    private val taskTiming = MutableLiveData<String>()
 
     val cursor: LiveData<Cursor>
         get() = databaseCursor
+
+    val timing: LiveData<String>
+        get() = taskTiming
 
     init {
         Log.d(TAG, "init: Android ViewModel Created")
@@ -93,7 +97,7 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
                         values
                     )
                     if (uri != null) {
-                        newTask.id = TaskContract.getId(uri);
+                        newTask.id = TaskContract.getId(uri)
                         Log.d(TAG, "saveTake: new task record created with id: ${newTask.id}")
                     }
                 }
@@ -127,15 +131,18 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
             saveTiming(timingRecord)
             // if same task is clicked then stop timing that task
             // else update that record
-            if (task.id == timingRecord.taskId) {
-                currentTiming = null
+            currentTiming = if (task.id == timingRecord.taskId) {
+                null
             } else {
                 // instead of using !! on currTimnig --> saveTiming(currtiming!!)
                 val newTiming = Timing(task.id)
                 saveTiming(newTiming)
-                currentTiming = newTiming
+                newTiming
             }
         }
+
+        //updating the live data of taskTiming
+        taskTiming.value = if (currentTiming != null) task.name else null
     }
 
     private fun saveTiming(currentTiming: Timing) {

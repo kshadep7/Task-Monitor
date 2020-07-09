@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.Fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,11 +10,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.akash.taskMonitor.models.Task
+import com.akash.taskMonitor.R
+import com.akash.taskMonitor.viewModels.TaskTimerViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit.*
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_TASK = "task"
-private const val TAG = "Fragment Add Edit"
+private const val TAG = "FragmentAddEdit"
 
 /**
  * A simple [Fragment] subclass.
@@ -26,7 +29,7 @@ class FragmentAddEdit : Fragment() {
     private var task: Task? = null
     private var listener: OnSaveClickListener? = null
     private val viewModel by lazy {
-        ViewModelProviders.of(activity!!).get(TaskTimerViewModel::class.java)
+        ViewModelProviders.of(requireActivity()).get(TaskTimerViewModel::class.java)
     }
 
     override fun onAttach(context: Context) {
@@ -121,7 +124,11 @@ class FragmentAddEdit : Fragment() {
             else 0
 
         val newTask =
-            Task(editTextAddName.text.toString(), editTextDescription.text.toString(), sortOrder)
+            Task(
+                editTextAddName.text.toString(),
+                editTextDescription.text.toString(),
+                sortOrder
+            )
         newTask.id = task?.id ?: 0
 
         return newTask

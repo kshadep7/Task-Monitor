@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.Fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -10,6 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akash.taskMonitor.*
+import com.akash.taskMonitor.adapters.CursorRecyclerViewAdapter
+import com.akash.taskMonitor.models.Task
+import com.akash.taskMonitor.utilities.AppDialog
+import com.akash.taskMonitor.utilities.DIALOG_ID
+import com.akash.taskMonitor.utilities.DIALOG_MSG
+import com.akash.taskMonitor.utilities.DIALOG_POSITIVE_RID
+import com.akash.taskMonitor.viewModels.TaskTimerViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
@@ -33,7 +41,8 @@ class MainActivityFragment : Fragment(),
     private val viewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(TaskTimerViewModel::class.java)
     }
-    private val rvAdapter = CursorRecyclerViewAdapter(null, this)
+    private val rvAdapter =
+        CursorRecyclerViewAdapter(null, this)
 
     override fun onAttach(context: Context) {
         Log.d(TAG, "onAttach: called")
@@ -69,12 +78,18 @@ class MainActivityFragment : Fragment(),
 
     override fun onDeleteClick(task: Task) {
         val args = Bundle().apply {
-            putInt(DIALOG_ID, DIALOG_ID_DELETE)
+            putInt(
+                DIALOG_ID,
+                DIALOG_ID_DELETE
+            )
             putString(
                 DIALOG_MSG,
                 getString(R.string.dialog_delete_message, task.id, task.name)
             )
-            putInt(DIALOG_POSITIVE_RID, R.string.dialog_delete_positive_value)
+            putInt(
+                DIALOG_POSITIVE_RID,
+                R.string.dialog_delete_positive_value
+            )
             putLong(DIALOG_TASK_ID, task.id)
         }
         val dialog = AppDialog()

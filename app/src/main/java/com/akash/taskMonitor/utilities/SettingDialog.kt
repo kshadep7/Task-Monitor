@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.utilities
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.preference.PreferenceManager
+import com.akash.taskMonitor.R
 import kotlinx.android.synthetic.main.settings_dialog.*
 import java.util.*
 
@@ -26,12 +27,15 @@ class SettingDialog : AppCompatDialogFragment() {
 
     private val defaultFirstDayOfWeek = GregorianCalendar(Locale.getDefault()).firstDayOfWeek
     private var firstDay = defaultFirstDayOfWeek
-    private var ignoreLessThan = SETTING_DEFAULT_IGNORE_LESS_THAN
+    private var ignoreLessThan =
+        SETTING_DEFAULT_IGNORE_LESS_THAN
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: called")
         super.onCreate(savedInstanceState)
-        setStyle(AppCompatDialogFragment.STYLE_NORMAL, R.style.SettingsAppDialog)
+        setStyle(AppCompatDialogFragment.STYLE_NORMAL,
+            R.style.SettingsAppDialog
+        )
         // preventing fragment to get destroyed when activity is destroyed
         // because sometimes it can be very expensive to fetch data and display in fragments
         // an alternative can be to use view models but again creating fragment again is also an
@@ -132,7 +136,10 @@ class SettingDialog : AppCompatDialogFragment() {
         Log.d(TAG, "readValues: reading the saved Settings")
         with(PreferenceManager.getDefaultSharedPreferences(context)) {
             firstDay = getInt(SETTING_FIRST_DAY_OF_WEEK, defaultFirstDayOfWeek)
-            ignoreLessThan = getInt(SETTING_IGNORE_LESS_THAN, SETTING_DEFAULT_IGNORE_LESS_THAN)
+            ignoreLessThan = getInt(
+                SETTING_IGNORE_LESS_THAN,
+                SETTING_DEFAULT_IGNORE_LESS_THAN
+            )
         }
         Log.d(
             TAG,

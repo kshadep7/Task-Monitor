@@ -1,10 +1,11 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.utilities
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.akash.taskMonitor.*
 
 // to find fragment Id
 fun FragmentActivity.findFragmentById(id: Int): Fragment? {

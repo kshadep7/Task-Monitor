@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.utilities
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -8,6 +8,9 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteQueryBuilder
 import android.net.Uri
 import android.util.Log
+import com.akash.taskMonitor.singletons.CurrentTimingContract
+import com.akash.taskMonitor.singletons.TaskContract
+import com.akash.taskMonitor.singletons.TimingContract
 
 /**
  * This is only class which talks to class [AppDatabase]
@@ -41,15 +44,33 @@ class AppContentProvider : ContentProvider() {
         val matcher = UriMatcher(UriMatcher.NO_MATCH)
 
         // for content://com.akash.taskmonitor.provider/tasks
-        matcher.addURI(CONTENT_AUTHORITY, TaskContract.TABLE_NAME, TASKS)
+        matcher.addURI(
+            CONTENT_AUTHORITY,
+            TaskContract.TABLE_NAME,
+            TASKS
+        )
 
         // for content://com.akash.taskmonitor.provider/tasks/4 --> specific task eg. running
-        matcher.addURI(CONTENT_AUTHORITY, "${TaskContract.TABLE_NAME}/#", TASKS_ID)
+        matcher.addURI(
+            CONTENT_AUTHORITY, "${TaskContract.TABLE_NAME}/#",
+            TASKS_ID
+        )
 
-        matcher.addURI(CONTENT_AUTHORITY, TimingContract.TABLE_NAME, TIMINGS)
-        matcher.addURI(CONTENT_AUTHORITY, "${TimingContract.TABLE_NAME}/#", TIMINGS_ID)
+        matcher.addURI(
+            CONTENT_AUTHORITY,
+            TimingContract.TABLE_NAME,
+            TIMINGS
+        )
+        matcher.addURI(
+            CONTENT_AUTHORITY, "${TimingContract.TABLE_NAME}/#",
+            TIMINGS_ID
+        )
 
-        matcher.addURI(CONTENT_AUTHORITY, CurrentTimingContract.TABLE_NAME, CURRENT_TIMINGS)
+        matcher.addURI(
+            CONTENT_AUTHORITY,
+            CurrentTimingContract.TABLE_NAME,
+            CURRENT_TIMINGS
+        )
         return matcher
     }
 
@@ -95,25 +116,30 @@ class AppContentProvider : ContentProvider() {
 
         when (match) {
 
-            TASKS -> queryBuilder.tables = TaskContract.TABLE_NAME
+            TASKS -> queryBuilder.tables =
+                TaskContract.TABLE_NAME
 
             TASKS_ID -> {
-                queryBuilder.tables = TaskContract.TABLE_NAME
+                queryBuilder.tables =
+                    TaskContract.TABLE_NAME
                 val taskId = TaskContract.getId(uri)
                 queryBuilder.appendWhere("${TaskContract.Columns.ID} == ")
                 queryBuilder.appendWhereEscapeString("$taskId")
             }
 
-            TIMINGS -> queryBuilder.tables = TimingContract.TABLE_NAME
+            TIMINGS -> queryBuilder.tables =
+                TimingContract.TABLE_NAME
 
             TIMINGS_ID -> {
-                queryBuilder.tables = TimingContract.TABLE_NAME
+                queryBuilder.tables =
+                    TimingContract.TABLE_NAME
                 val timingId = TimingContract.getId(uri)
                 queryBuilder.appendWhere("${TimingContract.Columns.ID} ==")
                 queryBuilder.appendWhereEscapeString("$timingId")
             }
 
-            CURRENT_TIMINGS -> queryBuilder.tables = CurrentTimingContract.TABLE_NAME
+            CURRENT_TIMINGS -> queryBuilder.tables =
+                CurrentTimingContract.TABLE_NAME
 
             else -> throw IllegalArgumentException("Unknown Uri: $uri")
         }
@@ -144,7 +170,10 @@ class AppContentProvider : ContentProvider() {
                 val db = AppDatabase.getInstance(context!!).writableDatabase
                 recordId = db.insert(TaskContract.TABLE_NAME, null, values)
                 if (recordId != -1L) {
-                    returnUri = TaskContract.buildUriFromId(recordId)
+                    returnUri =
+                        TaskContract.buildUriFromId(
+                            recordId
+                        )
                 } else {
                     throw SQLException("Failed to insert record, uri: $uri")
                 }
@@ -154,7 +183,10 @@ class AppContentProvider : ContentProvider() {
                 val db = AppDatabase.getInstance(context!!).writableDatabase
                 recordId = db.insert(TimingContract.TABLE_NAME, null, values)
                 if (recordId != -1L) {
-                    returnUri = TimingContract.buildUriFromId(recordId)
+                    returnUri =
+                        TimingContract.buildUriFromId(
+                            recordId
+                        )
                 } else {
                     throw SQLException("Failed to insert record, uri: $uri")
                 }

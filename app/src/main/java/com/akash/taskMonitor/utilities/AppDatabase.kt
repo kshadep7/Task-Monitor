@@ -1,16 +1,23 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.utilities
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import com.akash.taskMonitor.singletons.CurrentTimingContract
+import com.akash.taskMonitor.singletons.TaskContract
+import com.akash.taskMonitor.singletons.TimingContract
+import com.akash.taskMonitor.singletons.SingletonHolder
 
 private const val TAG = "AppDatabase"
 private const val DATABASE_NAME = "TaskMonitor.db"
 private const val DATABASE_VERSION = 3
 
 internal class AppDatabase private constructor(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    SQLiteOpenHelper(context,
+        DATABASE_NAME, null,
+        DATABASE_VERSION
+    ) {
 
     init {
         Log.d(TAG, "AppDatabase Initialize")

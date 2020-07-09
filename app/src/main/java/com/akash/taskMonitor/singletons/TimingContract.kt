@@ -1,8 +1,9 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.singletons
 
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.BaseColumns
+import com.akash.taskMonitor.utilities.CONTENT_AUTHORITY_URI
 
 object TimingContract {
 
@@ -10,7 +11,9 @@ object TimingContract {
 
     //URI to access timing table
 
-    val CONTENT_URI: Uri = Uri.withAppendedPath(CONTENT_AUTHORITY_URI, TABLE_NAME)
+    val CONTENT_URI: Uri = Uri.withAppendedPath(CONTENT_AUTHORITY_URI,
+        TABLE_NAME
+    )
 
     val CONTENT_TYPE = "vnd.android.cursor.dir/vnd.$CONTENT_AUTHORITY_URI.$TABLE_NAME"
     val CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.$CONTENT_AUTHORITY_URI.$TABLE_NAME"

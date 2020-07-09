@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.utilities
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatDialogFragment
+import com.akash.taskMonitor.R
 
 private const val TAG = "AppDialog"
 

@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.viewModels
 
 import android.app.Application
 import android.content.ContentValues
@@ -10,6 +10,11 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.akash.taskMonitor.models.Task
+import com.akash.taskMonitor.singletons.TaskContract
+import com.akash.taskMonitor.models.Timing
+import com.akash.taskMonitor.singletons.CurrentTimingContract
+import com.akash.taskMonitor.singletons.TimingContract
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -98,7 +103,8 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
                         values
                     )
                     if (uri != null) {
-                        newTask.id = TaskContract.getId(uri)
+                        newTask.id =
+                            TaskContract.getId(uri)
                         Log.d(TAG, "saveTake: new task record created with id: ${newTask.id}")
                     }
                 }
@@ -166,10 +172,13 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
                     values
                 )
                 if (uri != null)
-                    currentTiming.id = TimingContract.getId(uri)
+                    currentTiming.id =
+                        TimingContract.getId(uri)
             } else {
                 getApplication<Application>().contentResolver.update(
-                    TimingContract.buildUriFromId(currentTiming.id),
+                    TimingContract.buildUriFromId(
+                        currentTiming.id
+                    ),
                     values, null, null
                 )
             }

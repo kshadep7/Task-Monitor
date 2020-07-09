@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

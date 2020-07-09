@@ -1,4 +1,4 @@
-package com.akash.taskMonitor
+package com.akash.taskMonitor.adapters
 
 import android.annotation.SuppressLint
 import android.database.Cursor
@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.akash.taskMonitor.R
+import com.akash.taskMonitor.models.Task
+import com.akash.taskMonitor.singletons.TaskContract
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.task_list_item.view.*
 

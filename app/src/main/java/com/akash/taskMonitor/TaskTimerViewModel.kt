@@ -42,6 +42,7 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
             true,
             contentObserver
         )
+        currentTiming = retrieveCurrentTimings()
         loadTasks()
     }
 
@@ -173,6 +174,35 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
                 )
             }
         }
+    }
+
+    private fun retrieveCurrentTimings(): Timing? {
+        Log.d(TAG, "retrieveCurrentTimings: starts")
+        val timing: Timing?
+
+        val timingCursor = getApplication<Application>().contentResolver.query(
+            CurrentTimingContract.CONTENT_URI,
+            null, null, null, null
+        )
+
+        if (timingCursor != null && timingCursor.moveToFirst()) {
+            val id =
+                timingCursor.getLong(timingCursor.getColumnIndex(CurrentTimingContract.Columns.TIMIMG_ID))
+            val startTime =
+                timingCursor.getLong(timingCursor.getColumnIndex(CurrentTimingContract.Columns.TIMING_START_TIME))
+            val taskId =
+                timingCursor.getLong(timingCursor.getColumnIndex(CurrentTimingContract.Columns.TIMING_TASK_ID))
+            val taskName =
+                timingCursor.getString(timingCursor.getColumnIndex(CurrentTimingContract.Columns.TASK_NAME))
+            timing = Timing(taskId, startTime, id)
+            // updating the UI with the current task name being timed
+            taskTiming.value = taskName
+        } else {
+            // no timings record with zero duration
+            timing = null
+        }
+        timingCursor?.close()
+        return timing
     }
 
     override fun onCleared() {

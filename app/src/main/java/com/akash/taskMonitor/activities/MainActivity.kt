@@ -18,9 +18,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.akash.taskMonitor.*
+import com.akash.taskMonitor.BuildConfig
 import com.akash.taskMonitor.Fragments.FragmentAddEdit
 import com.akash.taskMonitor.Fragments.MainActivityFragment
+import com.akash.taskMonitor.R
+import com.akash.taskMonitor.debug.TestData
 import com.akash.taskMonitor.models.Task
 import com.akash.taskMonitor.utilities.*
 import com.akash.taskMonitor.viewModels.TaskTimerViewModel
@@ -85,6 +87,11 @@ class MainActivity : AppCompatActivity(),
         Log.d(TAG, "onCreateOptionsMenu: Start")
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
+
+        if (BuildConfig.DEBUG) {
+            val generateData = menu.findItem(R.id.mainmenu_generate)
+            generateData.isVisible = true
+        }
         return true
     }
 
@@ -101,6 +108,7 @@ class MainActivity : AppCompatActivity(),
             R.id.mainmenu_addTask -> taskEditRequest(null)
 //            else -> super.onOptionsItemSelected(item)
             R.id.mainmenu_about -> showAboutDialog()
+            R.id.mainmenu_generate -> TestData.genrateTestData(contentResolver)
             android.R.id.home -> {
                 val fragment = findFragmentById(R.id.task_detail_container)
 //                removeEditPane(fragment)
@@ -145,8 +153,10 @@ class MainActivity : AppCompatActivity(),
             try {
                 startActivity(intent)
             } catch (e: ActivityNotFoundException) {
-                Toast.makeText(this,
-                    R.string.no_application_found_err_msg, Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this,
+                    R.string.no_application_found_err_msg, Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
@@ -188,7 +198,8 @@ class MainActivity : AppCompatActivity(),
             .commit()
 */
         // extension func
-        replaceFragment(newFragment,
+        replaceFragment(
+            newFragment,
             R.id.task_detail_container
         )
 

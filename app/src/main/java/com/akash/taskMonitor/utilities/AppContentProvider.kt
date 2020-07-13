@@ -10,6 +10,7 @@ import android.net.Uri
 import android.util.Log
 import com.akash.taskMonitor.singletons.CurrentTimingContract
 import com.akash.taskMonitor.singletons.TaskContract
+import com.akash.taskMonitor.singletons.TaskDurationsContract
 import com.akash.taskMonitor.singletons.TimingContract
 
 /**
@@ -30,7 +31,6 @@ private const val TIMINGS_ID = 201
 private const val CURRENT_TIMINGS = 300
 
 private const val TASK_DURATIONS = 400
-private const val TASK_DURATIONS_ID = 401
 
 val CONTENT_AUTHORITY_URI: Uri = Uri.parse("content://$CONTENT_AUTHORITY")
 
@@ -44,33 +44,13 @@ class AppContentProvider : ContentProvider() {
         val matcher = UriMatcher(UriMatcher.NO_MATCH)
 
         // for content://com.akash.taskmonitor.provider/tasks
-        matcher.addURI(
-            CONTENT_AUTHORITY,
-            TaskContract.TABLE_NAME,
-            TASKS
-        )
-
+        matcher.addURI(CONTENT_AUTHORITY, TaskContract.TABLE_NAME, TASKS)
         // for content://com.akash.taskmonitor.provider/tasks/4 --> specific task eg. running
-        matcher.addURI(
-            CONTENT_AUTHORITY, "${TaskContract.TABLE_NAME}/#",
-            TASKS_ID
-        )
-
-        matcher.addURI(
-            CONTENT_AUTHORITY,
-            TimingContract.TABLE_NAME,
-            TIMINGS
-        )
-        matcher.addURI(
-            CONTENT_AUTHORITY, "${TimingContract.TABLE_NAME}/#",
-            TIMINGS_ID
-        )
-
-        matcher.addURI(
-            CONTENT_AUTHORITY,
-            CurrentTimingContract.TABLE_NAME,
-            CURRENT_TIMINGS
-        )
+        matcher.addURI(CONTENT_AUTHORITY, "${TaskContract.TABLE_NAME}/#", TASKS_ID)
+        matcher.addURI(CONTENT_AUTHORITY, TimingContract.TABLE_NAME, TIMINGS)
+        matcher.addURI(CONTENT_AUTHORITY, "${TimingContract.TABLE_NAME}/#", TIMINGS_ID)
+        matcher.addURI(CONTENT_AUTHORITY, CurrentTimingContract.TABLE_NAME, CURRENT_TIMINGS)
+        matcher.addURI(CONTENT_AUTHORITY, TaskDurationsContract.TABLE_NAME, TASK_DURATIONS)
         return matcher
     }
 
@@ -81,21 +61,14 @@ class AppContentProvider : ContentProvider() {
     }
 
     override fun getType(uri: Uri): String {
-
         val match = uriMatcher.match(uri)
-
         return when (match) {
-
             TASKS -> TaskContract.CONTENT_TYPE
-
             TASKS_ID -> TaskContract.CONTENT_ITEM_TYPE
-
             TIMINGS -> TimingContract.CONTENT_TYPE
-
             TIMINGS_ID -> TimingContract.CONTENT_ITEM_TYPE
-
             CURRENT_TIMINGS -> CurrentTimingContract.CONTENT_ITEM_TYPE
-
+            TASK_DURATIONS -> TaskDurationsContract.CONTENT_TYPE
             else -> throw IllegalArgumentException("Unknown uri : $uri")
         }
     }
@@ -113,36 +86,26 @@ class AppContentProvider : ContentProvider() {
         Log.d(TAG, "query: match with $match")
 
         val queryBuilder = SQLiteQueryBuilder()
-
         when (match) {
-
-            TASKS -> queryBuilder.tables =
-                TaskContract.TABLE_NAME
-
+            TASKS -> queryBuilder.tables = TaskContract.TABLE_NAME
             TASKS_ID -> {
-                queryBuilder.tables =
-                    TaskContract.TABLE_NAME
+                queryBuilder.tables = TaskContract.TABLE_NAME
                 val taskId = TaskContract.getId(uri)
                 queryBuilder.appendWhere("${TaskContract.Columns.ID} == ")
                 queryBuilder.appendWhereEscapeString("$taskId")
             }
-
-            TIMINGS -> queryBuilder.tables =
-                TimingContract.TABLE_NAME
-
+            TIMINGS -> queryBuilder.tables = TimingContract.TABLE_NAME
             TIMINGS_ID -> {
-                queryBuilder.tables =
-                    TimingContract.TABLE_NAME
+                queryBuilder.tables = TimingContract.TABLE_NAME
                 val timingId = TimingContract.getId(uri)
                 queryBuilder.appendWhere("${TimingContract.Columns.ID} ==")
                 queryBuilder.appendWhereEscapeString("$timingId")
             }
-
-            CURRENT_TIMINGS -> queryBuilder.tables =
-                CurrentTimingContract.TABLE_NAME
-
+            CURRENT_TIMINGS -> queryBuilder.tables = CurrentTimingContract.TABLE_NAME
+            TASK_DURATIONS -> queryBuilder.tables = TaskDurationsContract.TABLE_NAME
             else -> throw IllegalArgumentException("Unknown Uri: $uri")
         }
+
         val db = AppDatabase.getInstance(context!!).readableDatabase
         val cursor =
             queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder)
@@ -163,9 +126,7 @@ class AppContentProvider : ContentProvider() {
         val recordId: Long
         val returnUri: Uri
 
-
         when (match) {
-
             TASKS -> {
                 val db = AppDatabase.getInstance(context!!).writableDatabase
                 recordId = db.insert(TaskContract.TABLE_NAME, null, values)
@@ -178,22 +139,16 @@ class AppContentProvider : ContentProvider() {
                     throw SQLException("Failed to insert record, uri: $uri")
                 }
             }
-
             TIMINGS -> {
                 val db = AppDatabase.getInstance(context!!).writableDatabase
                 recordId = db.insert(TimingContract.TABLE_NAME, null, values)
                 if (recordId != -1L) {
-                    returnUri =
-                        TimingContract.buildUriFromId(
-                            recordId
-                        )
+                    returnUri = TimingContract.buildUriFromId(recordId)
                 } else {
                     throw SQLException("Failed to insert record, uri: $uri")
                 }
             }
-
             else -> throw IllegalArgumentException("Unknown uri $uri")
-
         }
         if (recordId > 0) {
             // something was inserted

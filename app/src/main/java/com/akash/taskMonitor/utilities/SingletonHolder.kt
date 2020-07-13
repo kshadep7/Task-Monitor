@@ -1,4 +1,4 @@
-package com.akash.taskMonitor.singletons
+package com.akash.taskMonitor.utilities
 
 import android.util.Log
 

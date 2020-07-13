@@ -6,15 +6,16 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.akash.taskMonitor.singletons.CurrentTimingContract
 import com.akash.taskMonitor.singletons.TaskContract
+import com.akash.taskMonitor.singletons.TaskDurationsContract
 import com.akash.taskMonitor.singletons.TimingContract
-import com.akash.taskMonitor.singletons.SingletonHolder
 
 private const val TAG = "AppDatabase"
 private const val DATABASE_NAME = "TaskMonitor.db"
-private const val DATABASE_VERSION = 3
+private const val DATABASE_VERSION = 4
 
 internal class AppDatabase private constructor(context: Context) :
-    SQLiteOpenHelper(context,
+    SQLiteOpenHelper(
+        context,
         DATABASE_NAME, null,
         DATABASE_VERSION
     ) {
@@ -40,6 +41,7 @@ internal class AppDatabase private constructor(context: Context) :
 
         addTimingsTable(db)
         addViewCurrentTimings(db)
+        addViewTaskDurations(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -47,8 +49,15 @@ internal class AppDatabase private constructor(context: Context) :
             1 -> {
                 addTimingsTable(db)
                 addViewCurrentTimings(db)
+                addViewTaskDurations(db)
             }
-            2 -> addViewCurrentTimings(db)
+            2 -> {
+                addViewCurrentTimings(db)
+                addViewTaskDurations(db)
+            }
+            3 -> {
+                addViewTaskDurations(db)
+            }
             else ->
                 throw IllegalStateException("onUpgrade() failed due to unknown newVersion: $newVersion")
         }
@@ -99,18 +108,6 @@ internal class AppDatabase private constructor(context: Context) :
         *   ORDER BY timings.startTime DESC
         */
 
-        /*
-        * val sSQLTimingView = """CREATE VIEW ${CurrentTimingContract.TABLE_NAME}
-        AS SELECT ${TimingsContract.TABLE_NAME}.${TimingsContract.Columns.ID},
-            ${TimingsContract.TABLE_NAME}.${TimingsContract.Columns.TIMING_TASK_ID},
-            ${TimingsContract.TABLE_NAME}.${TimingsContract.Columns.TIMING_START_TIME},
-            ${TasksContract.TABLE_NAME}.${TasksContract.Columns.TASK_NAME}
-        FROM ${TimingsContract.TABLE_NAME}
-        JOIN ${TasksContract.TABLE_NAME}
-        ON ${TimingsContract.TABLE_NAME}.${TimingsContract.Columns.TIMING_TASK_ID} = ${TasksContract.TABLE_NAME}.${TasksContract.Columns.ID}
-        WHERE ${TimingsContract.TABLE_NAME}.${TimingsContract.Columns.TIMING_DURATION} = 0
-        ORDER BY ${TimingsContract.TABLE_NAME}.${TimingsContract.Columns.TIMING_START_TIME} DESC;
-        * */
         val viewCurrentTimings = """CREATE VIEW ${CurrentTimingContract.TABLE_NAME}
             |AS SELECT ${TimingContract.TABLE_NAME}.${TimingContract.Columns.ID},
             |       ${TimingContract.TABLE_NAME}.${TimingContract.Columns.TIMIMG_TASK_ID},
@@ -125,5 +122,35 @@ internal class AppDatabase private constructor(context: Context) :
 
         Log.d(TAG, "addViewCurrentTimings: $viewCurrentTimings")
         db.execSQL(viewCurrentTimings)
+    }
+
+    private fun addViewTaskDurations(db: SQLiteDatabase) {
+        /*
+        CREATE VIEW viewTaskDurations AS
+        SELECT
+                task.name,
+                task.description,
+                Timings.startTime,
+                DATE(Timings.startTime, 'unixepoch', 'localtime') AS startDate,
+                SUM(Timings.duration) AS duration
+        FROM task INNER JOIN Timings
+        ON task._id == Timings.taskId
+        GROUP BY task._id, startDate
+        */
+
+        val viewTaskDuratiosns = """CREATE VIEW ${TaskDurationsContract.TABLE_NAME} AS
+            |SELECT
+            |       ${TaskContract.TABLE_NAME}.${TaskContract.Columns.TASK_NAME},
+            |       ${TaskContract.TABLE_NAME}.${TaskContract.Columns.TASK_DESCRIPTION},
+            |       ${TimingContract.TABLE_NAME}.${TimingContract.Columns.TIMING_START_TIME},
+            |       DATE(${TimingContract.TABLE_NAME}.${TimingContract.Columns.TIMING_START_TIME}, 'unixepoch', 'localtime') AS ${TaskDurationsContract.Columns.START_DATE},
+            |       SUM(${TimingContract.TABLE_NAME}.${TimingContract.Columns.TIMIMG_DURATION}) AS ${TaskDurationsContract.Columns.DURATION}
+            |FROM ${TaskContract.TABLE_NAME} INNER JOIN ${TimingContract.TABLE_NAME}
+            |ON ${TaskContract.TABLE_NAME}.${TaskContract.Columns.ID} == ${TimingContract.TABLE_NAME}.${TimingContract.Columns.TIMIMG_TASK_ID}
+            |GROUP BY ${TaskContract.TABLE_NAME}.${TaskContract.Columns.ID}, ${TaskDurationsContract.Columns.START_DATE};
+        """.trimMargin().replaceIndent(" ")
+
+        Log.d(TAG, "addViewTaskDurations: $viewTaskDuratiosns")
+        db.execSQL(viewTaskDuratiosns)
     }
 }

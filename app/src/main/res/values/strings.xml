@@ -39,6 +39,7 @@
     <string name="current_timing_task">Currently Timing: %1$s</string>
     <string name="txtView_taskName_heading">Task Name</string>
     <string name="textview_taskName_heading">Task Name</string>
-    <string name="textview_startTime_duration">Start Time</string>
+    <string name="textview_description_heading">Description</string>
+    <string name="textview_startTime_duration">Date</string>
     <string name="textview_duration_heading">Duration</string>
 </resources>

@@ -1,12 +1,11 @@
 package com.akash.taskMonitor
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import androidx.test.platform.app.InstrumentationRegistry
+import com.akash.taskMonitor.utilities.AppDatabase
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -20,5 +19,13 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.akash.tasktimer", appContext.packageName)
+    }
+
+    @Test
+    fun taskDurationViewQuery() {
+        // TODO: Check if the query formed is correct or not
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val database = AppDatabase.getInstance(context)
+//        val query = database.addViewTaskDurations()
     }
 }

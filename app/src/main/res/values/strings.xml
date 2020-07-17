@@ -37,4 +37,8 @@
     <string name="about_credits">The icon <b>Time Clock</b> was used from <b>openclipart.com</b></string>
     <string name="no_application_found_err_msg">No browser application found</string>
     <string name="current_timing_task">Currently Timing: %1$s</string>
+    <string name="txtView_taskName_heading">Task Name</string>
+    <string name="textview_taskName_heading">Task Name</string>
+    <string name="textview_startTime_duration">Start Time</string>
+    <string name="textview_duration_heading">Duration</string>
 </resources>

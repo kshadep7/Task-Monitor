@@ -124,7 +124,7 @@ internal class AppDatabase private constructor(context: Context) :
         db.execSQL(viewCurrentTimings)
     }
 
-    private fun addViewTaskDurations(db: SQLiteDatabase) {
+    fun addViewTaskDurations(db: SQLiteDatabase) {
         /*
         CREATE VIEW viewTaskDurations AS
         SELECT

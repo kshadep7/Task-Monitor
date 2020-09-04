@@ -17,7 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.akash.taskMonitor.BuildConfig
 import com.akash.taskMonitor.Fragments.FragmentAddEdit
 import com.akash.taskMonitor.Fragments.MainActivityFragment
@@ -29,7 +29,6 @@ import com.akash.taskMonitor.viewModels.TaskTimerViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.fragment_main.*
-
 
 private const val TAG = "MainActivity"
 private const val DIALOG_CANCEL_EDIT_ID = 1
@@ -47,7 +46,7 @@ class MainActivity : AppCompatActivity(),
     private var aboutDialog: AlertDialog? = null
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(TaskTimerViewModel::class.java)
+        ViewModelProvider(this).get(TaskTimerViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

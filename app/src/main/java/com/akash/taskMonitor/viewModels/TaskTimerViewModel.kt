@@ -30,12 +30,12 @@ class TaskTimerViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private var currentTiming: Timing? = null
-    private val databaseCursor = MutableLiveData<Cursor>()
-    private val taskTiming = MutableLiveData<String>()
 
+    private val databaseCursor = MutableLiveData<Cursor>()
     val cursor: LiveData<Cursor>
         get() = databaseCursor
 
+    private val taskTiming = MutableLiveData<String>()
     val timing: LiveData<String>
         get() = taskTiming
 

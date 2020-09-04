@@ -10,7 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.akash.taskMonitor.activities.MainActivity"
+            android:name=".activities.DurationReportActivity"
+            android:parentActivityName=".activities.MainActivity">
+
+        </activity>
+        <activity
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,10 +26,9 @@
         </activity>
 
         <provider
+            android:name=".utilities.AppContentProvider"
             android:authorities="com.akash.taskMonitor.provider"
-            android:name="com.akash.taskMonitor.utilities.AppContentProvider"
             android:exported="false" />
-        <!--exported -> to set if other apps can use this app contents or not-->
     </application>
 
 </manifest>

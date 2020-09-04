@@ -9,7 +9,7 @@
         android:title="@string/menuTitle_addTask"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/showDurations"
+        android:id="@+id/mainmenu_showDurations"
         android:icon="@android:drawable/ic_menu_view"
         android:orderInCategory="20"
         android:title="@string/menuTitle_showDurations"

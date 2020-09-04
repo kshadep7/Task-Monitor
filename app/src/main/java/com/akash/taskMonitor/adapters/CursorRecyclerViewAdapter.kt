@@ -13,7 +13,9 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.task_list_item.view.*
 
 class TaskViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
-    LayoutContainer {
+    LayoutContainer { // using LayoutContainer so that we can directly use synthetic imports
+    // instead of findViewById()
+    // see it in action in onBindViewHolder()
 
     fun bind(task: Task, listener: CursorRecyclerViewAdapter.OnTaskClickListener) {
 

@@ -106,6 +106,12 @@ class MainActivity : AppCompatActivity(),
                 dialog.show(supportFragmentManager, null)
             }
             R.id.mainmenu_addTask -> taskEditRequest(null)
+            R.id.mainmenu_showDurations -> startActivity(
+                Intent(
+                    this,
+                    DurationReportActivity::class.java
+                )
+            )
 //            else -> super.onOptionsItemSelected(item)
             R.id.mainmenu_about -> showAboutDialog()
             R.id.mainmenu_generate -> TestData.genrateTestData(contentResolver)

@@ -25,7 +25,7 @@ class DurationViewModel(application: Application) : AndroidViewModel(application
     val cursor: LiveData<Cursor>
         get() = databaseCursor
 
-    private var sortOrder = SortColumns.NAME
+    var sortOrder = SortColumns.NAME
         // setting order if user wants to change the order of the reports based on name, duration etc
         set(order) {
             if (field != order) {

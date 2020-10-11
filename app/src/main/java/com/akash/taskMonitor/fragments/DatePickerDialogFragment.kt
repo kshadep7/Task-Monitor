@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatDialogFragment
+import com.akash.taskMonitor.utilities.MyDatePickerDialog
 import java.util.*
 
 private const val TAG = "DatePickerDialogFragmen"
@@ -43,7 +44,8 @@ class DatePickerDialogFragment : AppCompatDialogFragment(), DatePickerDialog.OnD
         val month = cal.get(GregorianCalendar.MONTH)
         val day = cal.get(GregorianCalendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(requireContext(), this, year, month, day)
+        // instead of using default DatePickerDialog -> use Custom Class to resolve issue #2
+        val datePickerDialog = MyDatePickerDialog(requireContext(), this, year, month, day)
         if (title != null)
             datePickerDialog.setTitle(title)
 

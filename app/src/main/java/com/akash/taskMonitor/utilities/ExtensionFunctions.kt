@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.akash.taskMonitor.*
+import com.akash.taskMonitor.R
 
 // to find fragment Id
 fun FragmentActivity.findFragmentById(id: Int): Fragment? {
@@ -47,7 +47,7 @@ fun FragmentActivity.addFragment(fragment: Fragment, frameId: Int) {
 
 //to replace fragment
 fun FragmentActivity.replaceFragment(fragment: Fragment, frameId: Int) {
-    supportFragmentManager.inTransaction { add(frameId, fragment) }
+    supportFragmentManager.inTransaction { replace(frameId, fragment) }
 }
 
 // to remove fragment

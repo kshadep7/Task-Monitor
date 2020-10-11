@@ -2,6 +2,7 @@ package com.akash.taskMonitor.adapters
 
 import android.content.Context
 import android.database.Cursor
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,6 +74,7 @@ class TaskDurationsRVAdapter(context: Context, private var cursor: Cursor?) :
     }
 
     fun swapCursor(newCursor: Cursor?): Cursor? {
+        Log.d(TAG, "swapCursor: newCursor: $newCursor")
         if (newCursor == cursor) return null
 
         val numItems = itemCount

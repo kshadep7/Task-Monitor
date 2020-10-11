@@ -1,4 +1,4 @@
-package com.akash.taskMonitor.Fragments
+package com.akash.taskMonitor.fragments
 
 import android.content.Context
 import android.os.Bundle

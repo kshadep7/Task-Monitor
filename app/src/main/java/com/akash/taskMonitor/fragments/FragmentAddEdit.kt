@@ -1,4 +1,4 @@
-package com.akash.taskMonitor.Fragments
+package com.akash.taskMonitor.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.akash.taskMonitor.models.Task
 import com.akash.taskMonitor.R
+import com.akash.taskMonitor.models.Task
 import com.akash.taskMonitor.viewModels.TaskTimerViewModel
 import kotlinx.android.synthetic.main.fragment_add_edit.*
 
@@ -30,6 +30,10 @@ class FragmentAddEdit : Fragment() {
     private var listener: OnSaveClickListener? = null
     private val viewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(TaskTimerViewModel::class.java)
+    }
+
+    interface OnSaveClickListener {
+        fun onSaveClicked()
     }
 
     override fun onAttach(context: Context) {
@@ -81,6 +85,10 @@ class FragmentAddEdit : Fragment() {
         if (listener is AppCompatActivity) {
             val actionBar = (listener as AppCompatActivity).supportActionBar
             actionBar?.setDisplayHomeAsUpEnabled(true)
+            if (task != null)
+                actionBar?.setTitle("Edit Task")
+            else
+                actionBar?.setTitle("Add New Task")
         }
 
         btnSave.setOnClickListener {
@@ -97,6 +105,8 @@ class FragmentAddEdit : Fragment() {
         super.onDetach()
         listener = null
     }
+
+
 
     private fun saveTask() {
         // creating a new task using taskFromUi method
@@ -197,9 +207,6 @@ class FragmentAddEdit : Fragment() {
     }
 */
 
-    interface OnSaveClickListener {
-        fun onSaveClicked()
-    }
 
     companion object {
         /**

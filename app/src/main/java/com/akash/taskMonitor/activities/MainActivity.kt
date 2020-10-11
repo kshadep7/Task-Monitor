@@ -19,10 +19,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.akash.taskMonitor.BuildConfig
-import com.akash.taskMonitor.Fragments.FragmentAddEdit
-import com.akash.taskMonitor.Fragments.MainActivityFragment
 import com.akash.taskMonitor.R
 import com.akash.taskMonitor.debug.TestData
+import com.akash.taskMonitor.fragments.FragmentAddEdit
+import com.akash.taskMonitor.fragments.MainActivityFragment
 import com.akash.taskMonitor.models.Task
 import com.akash.taskMonitor.utilities.*
 import com.akash.taskMonitor.viewModels.TaskTimerViewModel
@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(),
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
 
+        // generate data menu item will only show in debug version of the app.
         if (BuildConfig.DEBUG) {
             val generateData = menu.findItem(R.id.mainmenu_generate)
             generateData.isVisible = true
@@ -127,6 +128,7 @@ class MainActivity : AppCompatActivity(),
                     )
                 } else
                     removeEditPane(fragment)
+                supportActionBar?.setTitle(getString(R.string.action_bar_all_tasks_title))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -184,6 +186,7 @@ class MainActivity : AppCompatActivity(),
             } else
                 removeEditPane(fragment)
         }
+        supportActionBar?.title = getString(R.string.action_bar_all_tasks_title)
     }
 
     override fun onTaskEdit(task: Task) {
@@ -203,11 +206,7 @@ class MainActivity : AppCompatActivity(),
             .commit()
 */
         // extension func
-        replaceFragment(
-            newFragment,
-            R.id.task_detail_container
-        )
-
+        replaceFragment(newFragment, R.id.task_detail_container)
         showEditPane()
         Log.d(TAG, "taskEditRequest: Ends")
     }
@@ -222,7 +221,6 @@ class MainActivity : AppCompatActivity(),
         task_detail_container.visibility = View.VISIBLE
         // check orientation and show the main fragment (list of tasks)
         mainFragment.view?.visibility = if (mTwoPane) View.VISIBLE else View.GONE
-
     }
 
     private fun removeEditPane(fragment: Fragment? = null) {

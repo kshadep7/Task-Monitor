@@ -65,6 +65,4 @@ class DatePickerDialogFragment : AppCompatDialogFragment(), DatePickerDialog.OnD
         // updating the date picker listener with new values of year, month, and year
         (context as DatePickerDialog.OnDateSetListener).onDateSet(view, year, month, dayOfMonth)
     }
-
-
 }

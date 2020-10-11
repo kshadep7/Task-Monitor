@@ -128,4 +128,5 @@ class DurationReportActivity : AppCompatActivity(),
             else -> throw IllegalArgumentException("Invalid argument when receiving the DatePickerDialog result")
         }
     }
+
 }

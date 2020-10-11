@@ -17,4 +17,4 @@ Which are:
 <img src="https://github.com/kshadep7/Task-Monitor/blob/master/TMapp.mov" width="300" height = "500"/>
 
 #### Task Durations Report
-<img src="https://github.com/kshadep7/Task-Monitor/blob/master/TMapp1.gif" width="300" height = "500"/>
+<img src="https://github.com/kshadep7/Task-Monitor/blob/master/TMapp1.mov" width="300" height = "500"/>
